@@ -24,8 +24,6 @@ Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
 Patch2:         %{name}-bz133180.patch
 BuildRequires:  ant, jaf >= 0:1.0.1-5jpp, javamail >= 0:1.2-5jpp
-# XXX the next line forces beehive to play nice
-BuildRequires:  xerces-j2
 %if !%{no_nonfree_deps}
 BuildRequires:  jms, jmx
 %endif
