@@ -1,7 +1,5 @@
 %define section	free
-
-# This flag causes the omission of non-free dependencies.
-%define no_nonfree_deps 1
+%define build_nonfree  %{?_with_nonfree:1}%{!?_without_nonfree:0}
 
 Name:           log4j
 Version:        1.2.8
@@ -24,7 +22,7 @@ Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
 Patch2:         %{name}-bz133180.patch
 BuildRequires:  ant, jaf >= 0:1.0.1-5jpp, javamail >= 0:1.2-5jpp
-%if !%{no_nonfree_deps}
+%if %{build_nonfree}
 BuildRequires:  jms, jmx
 %endif
 BuildRequires:  jndi, jpackage-utils >= 0:1.5, xml-commons-apis-javadoc
@@ -83,10 +81,10 @@ fi
 
 
 %build
-%if %{no_nonfree_deps}
-export CLASSPATH=%(build-classpath jaf javamail/mailapi)
-%else
+%if %{build_nonfree}
 export CLASSPATH=%(build-classpath jaf javamail/mailapi jms jmxri jmxtools)
+%else
+export CLASSPATH=%(build-classpath jaf javamail/mailapi)
 %endif
 ant jar javadoc
 
