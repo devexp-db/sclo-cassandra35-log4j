@@ -1,5 +1,5 @@
 %define section	free
-%define build_nonfree  %{?_with_nonfree:1}%{!?_without_nonfree:0}
+%define use_nonfree  %{?_with_nonfree:1}%{!?_without_nonfree:0}
 
 Name:           log4j
 Version:        1.2.8
@@ -22,7 +22,7 @@ Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
 Patch2:         %{name}-bz133180.patch
 BuildRequires:  ant, jaf >= 0:1.0.1-5jpp, javamail >= 0:1.2-5jpp
-%if %{build_nonfree}
+%if %{use_nonfree}
 BuildRequires:  jms, jmx
 %endif
 BuildRequires:  jndi, jpackage-utils >= 0:1.5, xml-commons-apis-javadoc
@@ -65,7 +65,7 @@ fi
 
 
 %build
-%if %{build_nonfree}
+%if %{use_nonfree}
 export CLASSPATH=%(build-classpath jaf javamail/mailapi jms jmxri jmxtools)
 %else
 export CLASSPATH=%(build-classpath jaf javamail/mailapi)
