@@ -2,7 +2,7 @@
 
 Name:           log4j
 Version:        1.2.8
-Release:        7jpp
+Release:        7jpp_1rh
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -25,8 +25,8 @@ Requires:       jpackage-utils >= 0:1.5, xml-commons-apis, jaxp_parser_impl
 Group:          System/Logging
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-Vendor:         JPackage Project
-Distribution:   JPackage
+#Vendor:         JPackage Project
+#Distribution:   JPackage
 
 %description
 Log4j is a tool to help the programmer output log statements to a
@@ -159,6 +159,9 @@ fi
 
 
 %changelog
+* Thu Mar  4 2004 Frank Ch. Eigler <fche@redhat.com> - 0.1.2.8-7jpp_1rh
+- RH vacuuming
+
 * Sun Aug 31 2003 Ville Skyttä <ville.skytta at iki.fi> - 0:1.2.8-7jpp
 - Add scripts and freedesktop.org menu entries for LogFactor5 and Chainsaw.
 - Include log4j.dtd and install SGML/XML catalogs.
