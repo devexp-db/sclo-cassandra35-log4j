@@ -1,5 +1,8 @@
 %define section	free
 
+# This flag causes the omission of non-free dependencies.
+%define no_nonfree_deps 1
+
 Name:           log4j
 Version:        1.2.8
 Release:        7jpp_1rh
@@ -19,7 +22,11 @@ Source6:        %{name}-chainsaw.desktop
 Source7:        %{name}.catalog
 Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
-BuildRequires:  ant, jaf >= 0:1.0.1-5jpp, javamail >= 0:1.2-5jpp, jms, jmx
+Patch2:         %{name}-bz133180.patch
+BuildRequires:  ant, jaf >= 0:1.0.1-5jpp, javamail >= 0:1.2-5jpp
+%if !%{no_nonfree_deps}
+BuildRequires:  jms, jmx
+%endif
 BuildRequires:  jndi, jpackage-utils >= 0:1.5, xml-commons-apis-javadoc
 Requires:       jpackage-utils >= 0:1.5, xml-commons-apis, jaxp_parser_impl
 Group:          System/Logging
@@ -53,10 +60,34 @@ Javadoc for %{name}.
 %patch1 -p0
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
+# delete stuff that doesn't work with libgcj (#133180).
+if java -version 2>&1 | grep -q "gcj"; then
+%patch2 -p0
+# delete stuff that doesn't work with libgcj (#130006).
+    lf5=src/java/org/apache/log4j/lf5
+    rm -f $lf5/AppenderFinalizer.java
+    rm -f $lf5/LF5Appender.java
+    rm -f $lf5/StartLogFactor5.java
+    rm -f $lf5/viewer/LF5SwingUtils.java
+    rm -f $lf5/viewer/LogBrokerMonitor.java
+    rm -f $lf5/viewer/LogTable.java
+    rm -f $lf5/viewer/categoryexplorer/CategoryExplorerTree.java
+    rm -f $lf5/viewer/categoryexplorer/CategoryImmediateEditor.java
+    rm -f $lf5/viewer/categoryexplorer/CategoryNodeEditor.java
+    rm -f $lf5/viewer/configure/ConfigurationManager.java
+    rm -f $lf5/util/LogFileParser.java
+    rm -f $lf5/util/LogMonitorAdapter.java
+    rm -f examples/lf5/UsingLogMonitorAdapter/CustomizedLogLevels.java
+    rm -f examples/lf5/UsingLogMonitorAdapter/UsingLogMonitorAdapter.java
+fi
 
 
 %build
+%if %{no_nonfree_deps}
+export CLASSPATH=%(build-classpath jaf javamail/mailapi)
+%else
 export CLASSPATH=%(build-classpath jaf javamail/mailapi jms jmxri jmxtools)
+%endif
 ant jar javadoc
 
 
