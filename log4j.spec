@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.8
-Release:        7jpp_2fc
+Release:        7jpp_3fc
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -61,22 +61,6 @@ find . -name "*.jar" -exec rm -f {} \;
 # delete stuff that doesn't work with libgcj (#133180).
 if java -version 2>&1 | grep -q "gcj"; then
 %patch2 -p0
-# delete stuff that doesn't work with libgcj (#130006).
-    lf5=src/java/org/apache/log4j/lf5
-    rm -f $lf5/AppenderFinalizer.java
-    rm -f $lf5/LF5Appender.java
-    rm -f $lf5/StartLogFactor5.java
-    rm -f $lf5/viewer/LF5SwingUtils.java
-    rm -f $lf5/viewer/LogBrokerMonitor.java
-    rm -f $lf5/viewer/LogTable.java
-    rm -f $lf5/viewer/categoryexplorer/CategoryExplorerTree.java
-    rm -f $lf5/viewer/categoryexplorer/CategoryImmediateEditor.java
-    rm -f $lf5/viewer/categoryexplorer/CategoryNodeEditor.java
-    rm -f $lf5/viewer/configure/ConfigurationManager.java
-    rm -f $lf5/util/LogFileParser.java
-    rm -f $lf5/util/LogMonitorAdapter.java
-    rm -f examples/lf5/UsingLogMonitorAdapter/CustomizedLogLevels.java
-    rm -f examples/lf5/UsingLogMonitorAdapter/UsingLogMonitorAdapter.java
 fi
 
 
@@ -188,6 +172,9 @@ fi
 
 
 %changelog
+* Tue Jan 11 2005 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_3fc
+- Reenable building of classes that require javax.swing (#130006).
+
 * Thu Nov  4 2004 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_2fc
 - Build into Fedora.
 
