@@ -5,7 +5,7 @@
 
 Name:           log4j
 Version:        1.2.8
-Release:        7jpp_1rh
+Release:        7jpp_1fc
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -190,7 +190,10 @@ fi
 
 
 %changelog
-* Thu Mar  4 2004 Frank Ch. Eigler <fche@redhat.com> - 0.1.2.8-7jpp_1rh
+* Mon Oct 11 2004 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_1fc
+- Build into Fedora.
+
+* Thu Mar  4 2004 Frank Ch. Eigler <fche@redhat.com> - 0:1.2.8-7jpp_1rh
 - RH vacuuming
 
 * Sun Aug 31 2003 Ville Skyttä <ville.skytta at iki.fi> - 0:1.2.8-7jpp
