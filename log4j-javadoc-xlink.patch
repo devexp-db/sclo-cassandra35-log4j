@@ -1,0 +1,14 @@
+--- build.xml~	2003-02-20 03:07:31.000000000 +0200
++++ build.xml	2003-08-31 03:41:21.000000000 +0300
+@@ -383,8 +383,11 @@
+            header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
+ 	   bottom="Copyright 2000-2002 Apache Software Foundation.">
+ 
++      <link href="/usr/share/javadoc/xml-commons-apis"/>
++      <!--
+       <link href="http://java.sun.com/products/jdk/1.3/docs/api"/>
+       <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
++      -->
+       <classpath refid="compile.classpath"/>
+     </javadoc>
+   </target>

@@ -1,0 +1,53 @@
+diff -Naru jakarta-log4j-1.2.8.orig/docs/lf5/configuration.html jakarta-log4j-1.2.8/docs/lf5/configuration.html
+--- jakarta-log4j-1.2.8.orig/docs/lf5/configuration.html	2003-02-20 03:07:31.000000000 +0200
++++ jakarta-log4j-1.2.8/docs/lf5/configuration.html	2003-08-31 03:22:21.000000000 +0300
+@@ -120,7 +120,7 @@
+ 	Configure-&gt;Save menu option saves your current GUI
+ 	configuration to a file called
+ 	<b>lf5_configuration.xml</b>. This configuration file is a
+-	saved to the location &lt;USER_HOME&gt;/lf5 on your local
++	saved to the location &lt;USER_HOME&gt;/.logfactor5 on your local
+ 	drive.
+       </p>
+                                                 <p>The information saved in the configuration file is as
+diff -Naru jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configure/ConfigurationManager.java jakarta-log4j-1.2.8/src/java/org/apache/log4j/lf5/viewer/configure/ConfigurationManager.java
+--- jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configure/ConfigurationManager.java	2003-02-20 03:07:41.000000000 +0200
++++ jakarta-log4j-1.2.8/src/java/org/apache/log4j/lf5/viewer/configure/ConfigurationManager.java	2003-08-31 03:21:27.000000000 +0300
+@@ -332,7 +332,7 @@
+     String home = System.getProperty("user.home");
+     String sep = System.getProperty("file.separator");
+ 
+-    return home + sep + "lf5" + sep + CONFIG_FILE_NAME;
++    return home + sep + ".logfactor5" + sep + CONFIG_FILE_NAME;
+   }
+ 
+   //--------------------------------------------------------------------------
+diff -Naru jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configure/MRUFileManager.java jakarta-log4j-1.2.8/src/java/org/apache/log4j/lf5/viewer/configure/MRUFileManager.java
+--- jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configure/MRUFileManager.java	2003-02-20 03:07:38.000000000 +0200
++++ jakarta-log4j-1.2.8/src/java/org/apache/log4j/lf5/viewer/configure/MRUFileManager.java	2003-08-31 03:22:23.000000000 +0300
+@@ -158,14 +158,14 @@
+ 
+   /**
+    * Creates the directory where the MRU file list will be written.
+-   * The "lf5" directory is created in the Documents and Settings
++   * The ".logfactor5" directory is created in the Documents and Settings
+    * directory on Windows 2000 machines and where ever the user.home
+    * variable points on all other platforms.
+    */
+   public static void createConfigurationDirectory() {
+     String home = System.getProperty("user.home");
+     String sep = System.getProperty("file.separator");
+-    File f = new File(home + sep + "lf5");
++    File f = new File(home + sep + ".logfactor5");
+     if (!f.exists()) {
+       try {
+         f.mkdir();
+@@ -251,7 +251,7 @@
+     String home = System.getProperty("user.home");
+     String sep = System.getProperty("file.separator");
+ 
+-    return home + sep + "lf5" + sep + CONFIG_FILE_NAME;
++    return home + sep + ".logfactor5" + sep + CONFIG_FILE_NAME;
+   }
+ 
+   /**
