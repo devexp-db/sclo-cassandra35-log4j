@@ -5,7 +5,7 @@
 
 Name:           log4j
 Version:        1.2.8
-Release:        7jpp_1fc
+Release:        7jpp_2fc
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -24,6 +24,8 @@ Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
 Patch2:         %{name}-bz133180.patch
 BuildRequires:  ant, jaf >= 0:1.0.1-5jpp, javamail >= 0:1.2-5jpp
+# XXX the next line forces beehive to play nice
+BuildRequires:  xerces-j2
 %if !%{no_nonfree_deps}
 BuildRequires:  jms, jmx
 %endif
@@ -190,7 +192,7 @@ fi
 
 
 %changelog
-* Mon Oct 11 2004 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_1fc
+* Thu Nov  4 2004 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_2fc
 - Build into Fedora.
 
 * Thu Mar  4 2004 Frank Ch. Eigler <fche@redhat.com> - 0:1.2.8-7jpp_1rh
