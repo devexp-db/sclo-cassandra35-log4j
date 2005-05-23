@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.8
-Release:        7jpp_3fc
+Release:        7jpp_4fc
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -21,6 +21,7 @@ Source7:        %{name}.catalog
 Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
 Patch2:         %{name}-bz133180.patch
+Patch3:         %{name}-bz157585.patch
 BuildRequires:  ant, jaf >= 0:1.0.1-5jpp, javamail >= 0:1.2-5jpp
 %if %{use_nonfree}
 BuildRequires:  jms, jmx
@@ -30,8 +31,6 @@ Requires:       jpackage-utils >= 0:1.5, xml-commons-apis, jaxp_parser_impl
 Group:          System/Logging
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-#Vendor:         JPackage Project
-#Distribution:   JPackage
 
 %description
 Log4j is a tool to help the programmer output log statements to a
@@ -62,6 +61,7 @@ find . -name "*.jar" -exec rm -f {} \;
 if java -version 2>&1 | grep -q "gcj"; then
 %patch2 -p0
 fi
+%patch3 -p1
 
 
 %build
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Mon May 23 2005 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_4fc
+- Work around chainsaw failure (#157585).
+
 * Tue Jan 11 2005 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_3fc
 - Reenable building of classes that require javax.swing (#130006).
 
