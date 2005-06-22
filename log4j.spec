@@ -1,14 +1,13 @@
 %define section	free
-%define use_nonfree  %{?_with_nonfree:1}%{!?_without_nonfree:0}
 
 Name:           log4j
 Version:        1.2.8
-Release:        7jpp_4fc
+Release:        7jpp_5fc
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
 URL:            http://jakarta.apache.org/log4j/
-Source0:        http://jakarta.apache.org/log4j/jakarta-log4j-1.2.8.tar.gz
+Source0:        jakarta-log4j-1.2.8-RHCLEAN.tar.bz2
 # Converted from src/java/org/apache/log4j/lf5/viewer/images/lf5_small_icon.gif
 Source1:        %{name}-logfactor5.png
 Source2:        %{name}-logfactor5.sh
@@ -23,9 +22,7 @@ Patch1:         %{name}-javadoc-xlink.patch
 Patch2:         %{name}-bz133180.patch
 Patch3:         %{name}-bz157585.patch
 BuildRequires:  ant, jaf >= 0:1.0.1-5jpp, javamail >= 0:1.2-5jpp
-%if %{use_nonfree}
-BuildRequires:  jms, jmx
-%endif
+BuildRequires:  jms
 BuildRequires:  jndi, jpackage-utils >= 0:1.5, xml-commons-apis-javadoc
 Requires:       jpackage-utils >= 0:1.5, xml-commons-apis, jaxp_parser_impl
 Group:          System/Logging
@@ -55,21 +52,15 @@ Javadoc for %{name}.
 %setup -q -n jakarta-%{name}-%{version}
 %patch0 -p1
 %patch1 -p0
+%patch2 -p0
+%patch3 -p1
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
-# delete stuff that doesn't work with libgcj (#133180).
-if java -version 2>&1 | grep -q "gcj"; then
-%patch2 -p0
-fi
-%patch3 -p1
+find . -name "*.class" -exec rm -f {} \;
 
 
 %build
-%if %{use_nonfree}
-export CLASSPATH=%(build-classpath jaf javamail/mailapi jms jmxri jmxtools)
-%else
-export CLASSPATH=%(build-classpath jaf javamail/mailapi)
-%endif
+export CLASSPATH=%(build-classpath jaf javamail/mailapi jms)
 ant jar javadoc
 
 
@@ -172,6 +163,10 @@ fi
 
 
 %changelog
+* Wed Jun 22 2005 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_5fc
+- Reenable building of classes that require jms.
+- Remove classes and jarfiles from the tarball.
+
 * Mon May 23 2005 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_4fc
 - Work around chainsaw failure (#157585).
 
