@@ -2,7 +2,7 @@
 
 Name:           log4j
 Version:        1.2.8
-Release:        7jpp_5fc
+Release:        7jpp_6fc
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -19,8 +19,7 @@ Source6:        %{name}-chainsaw.desktop
 Source7:        %{name}.catalog
 Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
-Patch2:         %{name}-bz133180.patch
-Patch3:         %{name}-bz157585.patch
+Patch2:         %{name}-bz157585.patch
 BuildRequires:  ant, jaf >= 0:1.0.1-5jpp, javamail >= 0:1.2-5jpp
 BuildRequires:  jms
 BuildRequires:  jndi, jpackage-utils >= 0:1.5, xml-commons-apis-javadoc
@@ -52,8 +51,7 @@ Javadoc for %{name}.
 %setup -q -n jakarta-%{name}-%{version}
 %patch0 -p1
 %patch1 -p0
-%patch2 -p0
-%patch3 -p1
+%patch2 -p1
 # remove all binary libs
 find . -name "*.jar" -exec rm -f {} \;
 find . -name "*.class" -exec rm -f {} \;
@@ -163,6 +161,9 @@ fi
 
 
 %changelog
+* Thu Nov  3 2005 Archit Shah <ashah@redhat.com> 0:1.2.8-7jpp_6fc
+- Reenable building of example that uses rmic
+
 * Wed Jun 22 2005 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_5fc
 - Reenable building of classes that require jms.
 - Remove classes and jarfiles from the tarball.
