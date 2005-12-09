@@ -2,7 +2,7 @@
 
 Name:           log4j
 Version:        1.2.8
-Release:        7jpp_6fc
+Release: 7jpp_6fc.1
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -161,6 +161,9 @@ fi
 
 
 %changelog
+* Fri Dec 09 2005 Jesse Keating <jkeating@redhat.com>
+- rebuilt
+
 * Thu Nov  3 2005 Archit Shah <ashah@redhat.com> 0:1.2.8-7jpp_6fc
 - Reenable building of example that uses rmic
 
