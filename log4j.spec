@@ -2,7 +2,7 @@
 
 Name:           log4j
 Version:        1.2.8
-Release: 7jpp_6fc.1
+Release: 7jpp_6fc.2
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
