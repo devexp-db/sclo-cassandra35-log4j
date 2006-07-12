@@ -2,7 +2,7 @@
 
 Name:           log4j
 Version:        1.2.8
-Release: 	7jpp_8fc
+Release: 	7jpp_9fc
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -162,6 +162,9 @@ fi
 
 
 %changelog
+* Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - 0:1.2.8-7jpp_9fc
+- rebuild
+
 * Mon Mar  6 2006 Jeremy Katz <katzj@redhat.com> - 0:1.2.8-7jpp_8fc
 - fix scriptlet spew
 
