@@ -1,19 +1,6 @@
-diff -Naru jakarta-log4j-1.2.8.orig/docs/lf5/configuration.html jakarta-log4j-1.2.8/docs/lf5/configuration.html
---- jakarta-log4j-1.2.8.orig/docs/lf5/configuration.html	2003-02-20 03:07:31.000000000 +0200
-+++ jakarta-log4j-1.2.8/docs/lf5/configuration.html	2003-08-31 03:22:21.000000000 +0300
-@@ -120,7 +120,7 @@
- 	Configure-&gt;Save menu option saves your current GUI
- 	configuration to a file called
- 	<b>lf5_configuration.xml</b>. This configuration file is a
--	saved to the location &lt;USER_HOME&gt;/lf5 on your local
-+	saved to the location &lt;USER_HOME&gt;/.logfactor5 on your local
- 	drive.
-       </p>
-                                                 <p>The information saved in the configuration file is as
-diff -Naru jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configure/ConfigurationManager.java jakarta-log4j-1.2.8/src/java/org/apache/log4j/lf5/viewer/configure/ConfigurationManager.java
---- jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configure/ConfigurationManager.java	2003-02-20 03:07:41.000000000 +0200
-+++ jakarta-log4j-1.2.8/src/java/org/apache/log4j/lf5/viewer/configure/ConfigurationManager.java	2003-08-31 03:21:27.000000000 +0300
-@@ -332,7 +332,7 @@
+--- src/java/org/apache/log4j/lf5/viewer/configure/ConfigurationManager.java.sav	2006-04-03 19:30:42.000000000 +0200
++++ src/java/org/apache/log4j/lf5/viewer/configure/ConfigurationManager.java	2006-04-03 19:31:35.000000000 +0200
+@@ -340,7 +340,7 @@
      String home = System.getProperty("user.home");
      String sep = System.getProperty("file.separator");
  
@@ -22,10 +9,9 @@ diff -Naru jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configu
    }
  
    //--------------------------------------------------------------------------
-diff -Naru jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configure/MRUFileManager.java jakarta-log4j-1.2.8/src/java/org/apache/log4j/lf5/viewer/configure/MRUFileManager.java
---- jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configure/MRUFileManager.java	2003-02-20 03:07:38.000000000 +0200
-+++ jakarta-log4j-1.2.8/src/java/org/apache/log4j/lf5/viewer/configure/MRUFileManager.java	2003-08-31 03:22:23.000000000 +0300
-@@ -158,14 +158,14 @@
+--- src/java/org/apache/log4j/lf5/viewer/configure/MRUFileManager.java.sav	2006-04-03 19:32:18.000000000 +0200
++++ src/java/org/apache/log4j/lf5/viewer/configure/MRUFileManager.java	2006-04-03 19:32:40.000000000 +0200
+@@ -166,14 +166,14 @@
  
    /**
     * Creates the directory where the MRU file list will be written.
@@ -42,7 +28,7 @@ diff -Naru jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configu
      if (!f.exists()) {
        try {
          f.mkdir();
-@@ -251,7 +251,7 @@
+@@ -259,7 +259,7 @@
      String home = System.getProperty("user.home");
      String sep = System.getProperty("file.separator");
  
@@ -51,3 +37,10 @@ diff -Naru jakarta-log4j-1.2.8.orig/src/java/org/apache/log4j/lf5/viewer/configu
    }
  
    /**
+@@ -281,4 +281,4 @@
+   //--------------------------------------------------------------------------
+   //   Nested Top-Level Classes or Interfaces
+   //--------------------------------------------------------------------------
+-}
+\ No newline at end of file
++}

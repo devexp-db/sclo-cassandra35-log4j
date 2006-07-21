@@ -1,13 +1,48 @@
+# Copyright (c) 2000-2005, JPackage Project
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the JPackage Project nor the names of its
+#    contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+%define _with_gcj_support 1
+
+%define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:%{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:%{_gcj_support}}%{!?_gcj_support:0}}}
+
 %define section	free
 
 Name:           log4j
-Version:        1.2.8
-Release: 	7jpp_9fc
+Version:        1.2.13
+Release:        2jpp_1fc
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
-URL:            http://jakarta.apache.org/log4j/
-Source0:        jakarta-log4j-1.2.8-RHCLEAN.tar.bz2
+URL:            http://logging.apache.org/log4j/
+#Source0:        http://www.apache.org/dist/logging/log4j/1.2.13/logging-log4j-1.2.13.tar.gz
+Source0:        logging-log4j-1.2.13-RHCLEAN.tar.gz
 # Converted from src/java/org/apache/log4j/lf5/viewer/images/lf5_small_icon.gif
 Source1:        %{name}-logfactor5.png
 Source2:        %{name}-logfactor5.sh
@@ -20,13 +55,33 @@ Source7:        %{name}.catalog
 Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
 Patch2:         %{name}-bz157585.patch
-BuildRequires:  ant, jaf >= 0:1.0.1-5jpp, javamail >= 0:1.2-5jpp
+BuildRequires:  jpackage-utils >= 0:1.6
+BuildRequires:  ant
+#Use classpathx-jaf for now
+#BuildRequires:  geronimo-jaf-1.0.2-api
+BuildRequires:  classpathx-jaf
+BuildRequires:  classpathx-mail
+# Use JMS for now
+#BuildRequires:  geronimo-jms-1.1-api
 BuildRequires:  jms
-BuildRequires:  jndi, jpackage-utils >= 0:1.5, xml-commons-apis-javadoc
-Requires:       jpackage-utils >= 0:1.5, xml-commons-apis, jaxp_parser_impl
+BuildRequires:  mx4j
+BuildRequires:  jndi
+BuildRequires:  java-javadoc
+BuildRequires:  %{__perl}
+Requires:       jpackage-utils >= 0:1.6
+Requires:       xml-commons-apis
+Requires:       jaxp_parser_impl
 Group:          System/Logging
+%if ! %{gcj_support}
 BuildArch:      noarch
+%endif
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+
+%if %{gcj_support}
+BuildRequires:		java-gcj-compat-devel
+Requires(post):		java-gcj-compat
+Requires(postun):	java-gcj-compat
+%endif
 
 %description
 Log4j is a tool to help the programmer output log statements to a
@@ -42,66 +97,89 @@ Documentation for %{name}.
 %package        javadoc
 Summary:        Javadoc for %{name}
 Group:          System/Logging
-Prereq: coreutils
 
 %description    javadoc
 Javadoc for %{name}.
 
 
 %prep
-%setup -q -n jakarta-%{name}-%{version}
-%patch0 -p1
-%patch1 -p0
-%patch2 -p1
-# remove all binary libs
-find . -name "*.jar" -exec rm -f {} \;
-find . -name "*.class" -exec rm -f {} \;
+%setup -q -n logging-%{name}-%{version}
+%patch0 -b .sav
+%patch1 -b .sav
+#%patch2 -p1
+
+%{__perl} -pi -e 's/\r//g' LICENSE.txt
+
+# remove all the stuff we'll build ourselves
+find . \( -name "*.jar" -o -name "*.class" \) -exec %__rm -f {} \;
+%__rm -rf docs/api
 
 
 %build
-export CLASSPATH=%(build-classpath jaf javamail/mailapi jms)
-ant jar javadoc
+#export CLASSPATH=$(build-classpath jaf javamail/mailapi jms mx4j/mx4j)
+# javac.source=1.1 doesn't work with Sun's 1.4.2_09/1.5.0_05
+%ant \
+	-Djavamail.jar=$(build-classpath javamail/mailapi) \
+	-Dactivation.jar=$(build-classpath jaf) \
+	-Djaxp.jaxp.jar.jar=$(build-classpath jaxp_parser_impl) \
+	-Djms.jar=$(build-classpath jms) \
+	-Djmx.jar=$(build-classpath mx4j/mx4j) \
+	-Djmx-extra.jar=$(build-classpath mx4j/mx4j-tools) \
+	-Djndi.jar=$(build-classpath jndi) \
+	-Djavac.source=1.2 \
+	-Djdk.javadoc=%{_javadocdir}/java \
+	jar javadoc
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
+%__rm -rf %{buildroot}
 
 # jars
-install -d -m 755 $RPM_BUILD_ROOT%{_javadir}
-install -p -m 644 dist/lib/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
+%__mkdir_p %{buildroot}%{_javadir}
+%__cp -a dist/lib/%{name}-%{version}.jar %{buildroot}%{_javadir}
+(cd %{buildroot}%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
 
 # javadoc
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr docs/api/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-rm -rf docs/api
+%__mkdir_p %{buildroot}%{_javadocdir}/%{name}-%{version}
+%__cp -a docs/api/* %{buildroot}%{_javadocdir}/%{name}-%{version}
+(cd %{buildroot}%{_javadocdir} && %__ln_s %{name}-%{version} %{name})
+%__rm -rf docs/api
+ln -s %{_javadocdir}/log4j docs/api
 
 # scripts
-install -d -m 755 $RPM_BUILD_ROOT%{_bindir}
-install -p -m 755 %{SOURCE2} $RPM_BUILD_ROOT%{_bindir}/logfactor5
-install -p -m 755 %{SOURCE5} $RPM_BUILD_ROOT%{_bindir}/chainsaw
+%__mkdir_p %{buildroot}%{_bindir}
+%__install -p -m 755 %{SOURCE2} %{buildroot}%{_bindir}/logfactor5
+%__install -p -m 755 %{SOURCE5} %{buildroot}%{_bindir}/chainsaw
 
 # freedesktop.org menu entries and icons
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/{applications,pixmaps}
-install -p -m 644 %{SOURCE1} \
-  $RPM_BUILD_ROOT%{_datadir}/pixmaps/logfactor5.png
-install -p -m 644 %{SOURCE3} \
-  $RPM_BUILD_ROOT%{_datadir}/applications/jpackage-logfactor5.desktop
-install -p -m 644 %{SOURCE4} \
-  $RPM_BUILD_ROOT%{_datadir}/pixmaps/chainsaw.png
-install -p -m 644 %{SOURCE6} \
-  $RPM_BUILD_ROOT%{_datadir}/applications/jpackage-chainsaw.desktop
+%__mkdir_p %{buildroot}%{_datadir}/{applications,pixmaps}
+%__cp -a %{SOURCE1} \
+  %{buildroot}%{_datadir}/pixmaps/logfactor5.png
+%__cp -a %{SOURCE3} \
+  %{buildroot}%{_datadir}/applications/jpackage-logfactor5.desktop
+%__cp -a %{SOURCE4} \
+  %{buildroot}%{_datadir}/pixmaps/chainsaw.png
+%__cp -a %{SOURCE6} \
+  %{buildroot}%{_datadir}/applications/jpackage-chainsaw.desktop
 
 # DTD and the SGML catalog (XML catalog handled in scriptlets)
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/sgml/%{name}
-install -p -m 644 src/java/org/apache/log4j/xml/log4j.dtd \
-  $RPM_BUILD_ROOT%{_datadir}/sgml/%{name}
-install -p -m 644 %{SOURCE7} \
-  $RPM_BUILD_ROOT%{_datadir}/sgml/%{name}/catalog
+%__mkdir_p %{buildroot}%{_datadir}/sgml/%{name}
+%__cp -a src/java/org/apache/log4j/xml/log4j.dtd \
+  %{buildroot}%{_datadir}/sgml/%{name}
+%__cp -a %{SOURCE7} \
+  %{buildroot}%{_datadir}/sgml/%{name}/catalog
 
+# fix perl location
+%__perl -p -i -e 's|/opt/perl5/bin/perl|%{__perl}|' \
+contribs/KitchingSimon/udpserver.pl
+
+
+%if %{gcj_support}
+%{_bindir}/aot-compile-rpm
+%endif
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+%__rm -rf %{buildroot}
 
 
 %post
@@ -117,6 +195,13 @@ if [ -x %{_bindir}/xmlcatalog -a -w %{_sysconfdir}/xml/catalog ]; then
     > /dev/null || :
 fi
 
+%if %{gcj_support}
+if [ -x %{_bindir}/rebuild-gcj-db ]
+then
+  %{_bindir}/rebuild-gcj-db
+fi
+%endif
+
 %preun
 if [ $1 -eq 0 ]; then
   if [ -x %{_bindir}/xmlcatalog -a -w %{_sysconfdir}/xml/catalog ]; then
@@ -124,6 +209,13 @@ if [ $1 -eq 0 ]; then
       %{_sysconfdir}/xml/catalog > /dev/null || :
   fi
 fi
+
+%if %{gcj_support}
+if [ -x %{_bindir}/rebuild-gcj-db ]
+then
+  %{_bindir}/rebuild-gcj-db
+fi
+%endif
 
 %postun
 # Note that we're using versioned catalog, so this is always ok.
@@ -133,24 +225,35 @@ if [ -x %{_bindir}/install-catalog -a -d %{_sysconfdir}/sgml ]; then
     %{_datadir}/sgml/%{name}/catalog > /dev/null || :
 fi
 
+%if %{gcj_support}
+if [ -x %{_bindir}/rebuild-gcj-db ]
+then
+  %{_bindir}/rebuild-gcj-db
+fi
+%endif
+
 %post javadoc
-rm -f %{_javadocdir}/%{name}
-ln -s %{name}-%{version} %{_javadocdir}/%{name}
+%__rm -f %{_javadocdir}/%{name}
+%__ln_s %{name}-%{version} %{_javadocdir}/%{name}
 
 %postun javadoc
 if [ $1 -eq 0 ]; then
-  rm -f %{_javadocdir}/%{name}
+  %__rm -f %{_javadocdir}/%{name}
 fi
 
 
 %files
 %defattr(-,root,root,-)
-%doc INSTALL LICENSE.txt
+%doc LICENSE.txt
 %{_bindir}/*
 %{_javadir}/*
 %{_datadir}/applications/*
 %{_datadir}/pixmaps/*
 %{_datadir}/sgml/%{name}
+
+%if %{gcj_support}
+%attr(-,root,root) %{_libdir}/gcj/%{name}/log4j-1.2.13.jar.*
+%endif
 
 %files manual
 %defattr(0644,root,root,0755)
@@ -158,10 +261,17 @@ fi
 
 %files javadoc
 %defattr(0644,root,root,0755)
-%{_javadocdir}/%{name}-%{version}
+%dir %{_javadocdir}/%{name}-%{version}
+%{_javadocdir}/%{name}-%{version}/*
+%ghost %dir %{_javadocdir}/%{name}
 
 
 %changelog
+* Fri Jul 21 2006 Vivek Lakshmanan <vivekl@redhat.com> - 0:1.2.13-2jpp_1fc
+- Merge spec and patches with latest from JPP.
+- Clean source tar ball off prebuilt jars and classes.
+- Use classpathx-jaf and jms for buildrequires for the time being.
+
 * Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - 0:1.2.8-7jpp_9fc
 - rebuild
 
