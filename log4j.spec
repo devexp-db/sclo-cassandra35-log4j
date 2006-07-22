@@ -36,7 +36,7 @@
 
 Name:           log4j
 Version:        1.2.13
-Release:        2jpp_1fc
+Release:        2jpp_2fc
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -267,6 +267,9 @@ fi
 
 
 %changelog
+* Sat Jul 22 2006 Jakub Jelinek <jakub@redhat.com> - 0:1.2.13-2jpp_2fc
+- Rebuilt
+
 * Fri Jul 21 2006 Vivek Lakshmanan <vivekl@redhat.com> - 0:1.2.13-2jpp_1fc
 - Merge spec and patches with latest from JPP.
 - Clean source tar ball off prebuilt jars and classes.
