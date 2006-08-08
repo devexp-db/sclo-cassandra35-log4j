@@ -36,7 +36,7 @@
 
 Name:           log4j
 Version:        1.2.13
-Release:        2jpp_2fc
+Release:        3jpp.1
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -54,6 +54,7 @@ Source6:        %{name}-chainsaw.desktop
 Source7:        %{name}.catalog
 Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
+#FIXME: Is this patch required?
 Patch2:         %{name}-bz157585.patch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant
@@ -97,16 +98,19 @@ Documentation for %{name}.
 %package        javadoc
 Summary:        Javadoc for %{name}
 Group:          System/Logging
+Requires(post):		%{__rm}
+Requires(post):		/bin/ln
+Requires(postun):	%{__rm}
 
 %description    javadoc
 Javadoc for %{name}.
-
 
 %prep
 %setup -q -n logging-%{name}-%{version}
 %patch0 -b .sav
 %patch1 -b .sav
-#%patch2 -p1
+# FIXME: Is this patch still required?
+%patch2 -p1
 
 %{__perl} -pi -e 's/\r//g' LICENSE.txt
 
@@ -267,6 +271,11 @@ fi
 
 
 %changelog
+* Tue Aug 08 2006 Vivek Lakshmanan <vivekl@redhat.com> - 0:1.2.13-3jpp.1
+- Re-sync with latest from JPP.
+- Update patch for BZ #157585 to apply cleanly.
+- Partially adopt new naming convention.
+
 * Sat Jul 22 2006 Jakub Jelinek <jakub@redhat.com> - 0:1.2.13-2jpp_2fc
 - Rebuilt
 
