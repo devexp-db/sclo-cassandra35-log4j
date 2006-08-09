@@ -36,7 +36,7 @@
 
 Name:           log4j
 Version:        1.2.13
-Release:        3jpp.1
+Release:        3jpp.2
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License
@@ -54,8 +54,6 @@ Source6:        %{name}-chainsaw.desktop
 Source7:        %{name}.catalog
 Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
-#FIXME: Is this patch required?
-Patch2:         %{name}-bz157585.patch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant
 #Use classpathx-jaf for now
@@ -109,8 +107,6 @@ Javadoc for %{name}.
 %setup -q -n logging-%{name}-%{version}
 %patch0 -b .sav
 %patch1 -b .sav
-# FIXME: Is this patch still required?
-%patch2 -p1
 
 %{__perl} -pi -e 's/\r//g' LICENSE.txt
 
@@ -271,6 +267,9 @@ fi
 
 
 %changelog
+* Wed Aug 09 2006 Vivek Lakshmanan <vivekl@redhat.com> - 0:1.2.13-3jpp.2
+- Remove patch for BZ #157585 because it doesnt seem to be needed anymore.
+
 * Tue Aug 08 2006 Vivek Lakshmanan <vivekl@redhat.com> - 0:1.2.13-3jpp.1
 - Re-sync with latest from JPP.
 - Update patch for BZ #157585 to apply cleanly.
