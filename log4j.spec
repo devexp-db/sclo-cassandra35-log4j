@@ -37,7 +37,7 @@
 
 Name:           log4j
 Version:        1.2.14
-Release:        3jpp.1{?dist}
+Release:        3jpp.1%{?dist}
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License 2
