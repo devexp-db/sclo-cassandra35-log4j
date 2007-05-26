@@ -1,4 +1,4 @@
-# Copyright (c) 2000-2005, JPackage Project
+# Copyright (c) 2000-2007, JPackage Project
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,18 +31,18 @@
 %define _with_gcj_support 1
 
 %define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:%{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:%{_gcj_support}}%{!?_gcj_support:0}}}
+%define bootstrap %{?_with_bootstrap:1}%{!?_with_bootstrap:%{?_without_bootstrap:0}%{!?_without_bootstrap:%{?_bootstrap:%{_bootstrap}}%{!?_bootstrap:0}}}
 
 %define section	free
 
 Name:           log4j
-Version:        1.2.13
-Release:        3jpp.2
+Version:        1.2.14
+Release:        3jpp.1{?dist}
 Epoch:          0
 Summary:        Java logging package
-License:        Apache Software License
-URL:            http://logging.apache.org/log4j/
-#Source0:        http://www.apache.org/dist/logging/log4j/1.2.13/logging-log4j-1.2.13.tar.gz
-Source0:        logging-log4j-1.2.13-RHCLEAN.tar.gz
+License:        Apache Software License 2
+URL:            http://logging.apache.org/log4j
+Source0:        http://www.apache.org/dist/logging/log4j/1.2.14/logging-log4j-1.2.14.tar.gz
 # Converted from src/java/org/apache/log4j/lf5/viewer/images/lf5_small_icon.gif
 Source1:        %{name}-logfactor5.png
 Source2:        %{name}-logfactor5.sh
@@ -54,8 +54,11 @@ Source6:        %{name}-chainsaw.desktop
 Source7:        %{name}.catalog
 Patch0:         %{name}-logfactor5-userdir.patch
 Patch1:         %{name}-javadoc-xlink.patch
+Patch2:         %{name}-mx4j-tools.patch
+Patch3:         %{name}-jmx-Agent.patch
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant
+%if ! %{bootstrap}
 #Use classpathx-jaf for now
 #BuildRequires:  geronimo-jaf-1.0.2-api
 BuildRequires:  classpathx-jaf
@@ -64,6 +67,7 @@ BuildRequires:  classpathx-mail
 #BuildRequires:  geronimo-jms-1.1-api
 BuildRequires:  jms
 BuildRequires:  mx4j
+%endif
 BuildRequires:  jndi
 BuildRequires:  java-javadoc
 BuildRequires:  %{__perl}
@@ -107,8 +111,10 @@ Javadoc for %{name}.
 %setup -q -n logging-%{name}-%{version}
 %patch0 -b .sav
 %patch1 -b .sav
-
-%{__perl} -pi -e 's/\r//g' LICENSE.txt
+%patch2 -b .sav2
+%patch3 -b .sav
+%{__perl} -pi -e 's/\r//g' LICENSE
+%{__perl} -pi -e 's/\r//g' NOTICE
 
 # remove all the stuff we'll build ourselves
 find . \( -name "*.jar" -o -name "*.class" \) -exec %__rm -f {} \;
@@ -116,7 +122,6 @@ find . \( -name "*.jar" -o -name "*.class" \) -exec %__rm -f {} \;
 
 
 %build
-#export CLASSPATH=$(build-classpath jaf javamail/mailapi jms mx4j/mx4j)
 # javac.source=1.1 doesn't work with Sun's 1.4.2_09/1.5.0_05
 %ant \
 	-Djavamail.jar=$(build-classpath javamail/mailapi) \
@@ -244,7 +249,8 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%doc LICENSE.txt
+%doc LICENSE
+%doc NOTICE
 %{_bindir}/*
 %{_javadir}/*
 %{_datadir}/applications/*
@@ -252,7 +258,7 @@ fi
 %{_datadir}/sgml/%{name}
 
 %if %{gcj_support}
-%attr(-,root,root) %{_libdir}/gcj/%{name}/log4j-1.2.13.jar.*
+%attr(-,root,root) %{_libdir}/gcj/%{name}/%{name}-%{version}.jar.*
 %endif
 
 %files manual
@@ -267,6 +273,26 @@ fi
 
 
 %changelog
+* Sat May 26 2007 Vivek Lakshmanan <vivekl@redhat.com> 0:1.2.14-3jpp.1
+- Upgrade to 1.2.14
+- Modify the categories for the .desktop files so they are only
+  displayed under the development/programming menus
+- Resolves: bug 241447
+
+* Fri May 11 2007 Jason Corley <jason.corley@gmail.com> 0:1.2.14-3jpp
+- rebuild through mock and centos 4
+- replace vendor and distribution with macros
+
+* Fri Apr 20 2007 Ralph Apel <r.apel at r-apel.de> - 0:1.2.14-2jpp
+- Patch to allow build of org.apache.log4j.jmx.* with mx4j
+- Restore Vendor: and Distribution:
+
+* Sat Feb 17 2007 Fernando Nasser <fnasser@redhat.com> - 0:1.2.14-1jpp
+- Upgrade
+
+* Mon Feb 12 2007 Ralph Apel <r.apel at r-apel.de> - 0:1.2.13-4jpp
+- Add bootstrap option to build core
+
 * Wed Aug 09 2006 Vivek Lakshmanan <vivekl@redhat.com> - 0:1.2.13-3jpp.2
 - Remove patch for BZ #157585 because it doesnt seem to be needed anymore.
 
