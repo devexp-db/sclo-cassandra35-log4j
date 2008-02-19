@@ -37,7 +37,7 @@
 
 Name:           log4j
 Version:        1.2.14
-Release:        3jpp.1%{?dist}
+Release:        4jpp.1%{?dist}
 Epoch:          0
 Summary:        Java logging package
 License:        Apache Software License 2
@@ -273,6 +273,9 @@ fi
 
 
 %changelog
+* Tue Feb 19 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 0:1.2.14-4jpp.1
+- Autorebuild for GCC 4.3
+
 * Sat May 26 2007 Vivek Lakshmanan <vivekl@redhat.com> 0:1.2.14-3jpp.1
 - Upgrade to 1.2.14
 - Modify the categories for the .desktop files so they are only
