@@ -37,10 +37,10 @@
 
 Name:           log4j
 Version:        1.2.14
-Release:        4jpp.1%{?dist}
+Release:        4jpp.2%{?dist}
 Epoch:          0
 Summary:        Java logging package
-License:        Apache Software License 2
+License:        ASL 2.0
 URL:            http://logging.apache.org/log4j
 Source0:        http://www.apache.org/dist/logging/log4j/1.2.14/logging-log4j-1.2.14.tar.gz
 # Converted from src/java/org/apache/log4j/lf5/viewer/images/lf5_small_icon.gif
@@ -273,6 +273,9 @@ fi
 
 
 %changelog
+* Thu May 29 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:1.2.14-4jpp.2
+- fix license tag
+
 * Tue Feb 19 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - 0:1.2.14-4jpp.1
 - Autorebuild for GCC 4.3
 
