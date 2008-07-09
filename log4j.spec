@@ -37,7 +37,7 @@
 
 Name:           log4j
 Version:        1.2.14
-Release:        4jpp.2%{?dist}
+Release:        4.3%{?dist}
 Epoch:          0
 Summary:        Java logging package
 License:        ASL 2.0
@@ -100,9 +100,9 @@ Documentation for %{name}.
 %package        javadoc
 Summary:        Javadoc for %{name}
 Group:          System/Logging
-Requires(post):		%{__rm}
-Requires(post):		/bin/ln
-Requires(postun):	%{__rm}
+# for /bin/rm and /bin/ln
+Requires(post):		coreutils
+Requires(postun):	coreutils
 
 %description    javadoc
 Javadoc for %{name}.
@@ -273,6 +273,9 @@ fi
 
 
 %changelog
+* Wed Jul  9 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:1.2.14-4.3
+- drop repotag
+
 * Thu May 29 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:1.2.14-4jpp.2
 - fix license tag
 
