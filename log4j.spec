@@ -37,7 +37,7 @@
 
 Name:           log4j
 Version:        1.2.14
-Release:        4.3%{?dist}
+Release:        5.3%{?dist}
 Epoch:          0
 Summary:        Java logging package
 License:        ASL 2.0
@@ -273,6 +273,9 @@ fi
 
 
 %changelog
+* Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.14-5.3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Wed Jul  9 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:1.2.14-4.3
 - drop repotag
 
