@@ -1,48 +1,16 @@
-# Copyright (c) 2000-2007, JPackage Project
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-# 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the
-#    distribution.
-# 3. Neither the name of the JPackage Project nor the names of its
-#    contributors may be used to endorse or promote products derived
-#    from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
 
-%define _with_gcj_support 1
-
-%define gcj_support %{?_with_gcj_support:1}%{!?_with_gcj_support:%{?_without_gcj_support:0}%{!?_without_gcj_support:%{?_gcj_support:%{_gcj_support}}%{!?_gcj_support:0}}}
-%define bootstrap %{?_with_bootstrap:1}%{!?_with_bootstrap:%{?_without_bootstrap:0}%{!?_without_bootstrap:%{?_bootstrap:%{_bootstrap}}%{!?_bootstrap:0}}}
-
-%define section	free
+%global bootstrap %{?_with_bootstrap:1}%{!?_with_bootstrap:%{?_without_bootstrap:0}%{!?_without_bootstrap:%{?_bootstrap:%{_bootstrap}}%{!?_bootstrap:0}}}
 
 Name:           log4j
-Version:        1.2.14
-Release:        6.3%{?dist}
+Version:        1.2.16
+Release:        1%{?dist}
 Epoch:          0
 Summary:        Java logging package
+BuildArch:      noarch
 License:        ASL 2.0
-URL:            http://logging.apache.org/log4j
-Source0:        http://www.apache.org/dist/logging/log4j/1.2.14/logging-log4j-1.2.14.tar.gz
+Group:          Development/Libraries
+URL:            http://logging.apache.org/%{name}
+Source0:        http://www.apache.org/dist/logging/%{name}/%{version}/apache-%{name}-%{version}.tar.gz
 # Converted from src/java/org/apache/log4j/lf5/viewer/images/lf5_small_icon.gif
 Source1:        %{name}-logfactor5.png
 Source2:        %{name}-logfactor5.sh
@@ -52,126 +20,143 @@ Source4:        %{name}-chainsaw.png
 Source5:        %{name}-chainsaw.sh
 Source6:        %{name}-chainsaw.desktop
 Source7:        %{name}.catalog
-Patch0:         %{name}-logfactor5-userdir.patch
-Patch1:         %{name}-javadoc-xlink.patch
-Patch2:         %{name}-mx4j-tools.patch
-Patch3:         %{name}-jmx-Agent.patch
-BuildRequires:  jpackage-utils >= 0:1.6
-BuildRequires:  ant
-%if ! %{bootstrap}
-#Use classpathx-jaf for now
-#BuildRequires:  geronimo-jaf-1.0.2-api
-BuildRequires:  classpathx-jaf
-BuildRequires:  classpathx-mail
-# Use JMS for now
-#BuildRequires:  geronimo-jms-1.1-api
-BuildRequires:  jms
-BuildRequires:  mx4j
-%endif
-BuildRequires:  jndi
-BuildRequires:  java-javadoc
+Patch0:         0001-logfactor5-changed-userdir.patch
+Patch1:         0002-Remove-version-dependencies.patch
+Patch2:         0003-Removed-example-in-wrong-place.patch
+Patch3:         0004-Remove-mvn-release-plugin.patch
+Patch4:         0005-Remove-mvn-source-plugin.patch
+Patch5:         0006-Remove-mvn-clirr-plugin.patch
+Patch6:         0007-Remove-mvn-rat-plugin.patch
+Patch7:         0008-Remove-ant-contrib-from-dependencies.patch
+Patch8:         0009-Remove-ant-run-of-tests.patch
+Patch9:         0010-Fix-javadoc-link.patch
+
 BuildRequires:  %{__perl}
+BuildRequires:  java >= 1:1.6.0
+BuildRequires:  jpackage-utils >= 0:1.6
+BuildRequires:  javamail
+BuildRequires:  geronimo-jms
+BuildRequires:  geronimo-parent-poms
+BuildRequires:  desktop-file-utils
+BuildRequires:  jpackage-utils >= 0:1.7.2
+BuildRequires:  maven-plugin-bundle
+BuildRequires:  maven-surefire-maven-plugin
+BuildRequires:  maven-surefire-provider-junit
+BuildRequires:  maven2-plugin-ant
+BuildRequires:  maven2-plugin-antrun
+BuildRequires:  maven2-plugin-assembly
+BuildRequires:  maven2-plugin-compiler
+BuildRequires:  maven2-plugin-idea
+BuildRequires:  maven2-plugin-install
+BuildRequires:  maven2-plugin-jar
+BuildRequires:  maven2-plugin-javadoc
+BuildRequires:  maven2-plugin-resources
+BuildRequires:  maven2-plugin-site
+
+
+Requires:       java >= 1:1.6.0
 Requires:       jpackage-utils >= 0:1.6
+Requires(post):    jpackage-utils
+Requires(postun):  jpackage-utils
 Requires:       xml-commons-apis
 Requires:       jaxp_parser_impl
-Group:          System/Logging
-%if ! %{gcj_support}
-BuildArch:      noarch
-%endif
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-
-%if %{gcj_support}
-BuildRequires:		java-gcj-compat-devel
-Requires(post):		java-gcj-compat
-Requires(postun):	java-gcj-compat
-%endif
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %description
 Log4j is a tool to help the programmer output log statements to a
 variety of output targets.
 
 %package        manual
-Summary:        Manual for %{name}
-Group:          System/Logging
+Summary:        Developer manual for %{name}
+Group:          Documentation
+Requires:       %{name}-javadoc = %{version}-%{release}
 
 %description    manual
-Documentation for %{name}.
+%{summary}.
 
 %package        javadoc
-Summary:        Javadoc for %{name}
-Group:          System/Logging
-# for /bin/rm and /bin/ln
-Requires(post):		coreutils
-Requires(postun):	coreutils
+Summary:        API documentation for %{name}
+Group:          Documentation
 
 %description    javadoc
-Javadoc for %{name}.
+%{summary}.
 
 %prep
-%setup -q -n logging-%{name}-%{version}
-%patch0 -b .sav
-%patch1 -b .sav
-%patch2 -b .sav2
-%patch3 -b .sav
-%{__perl} -pi -e 's/\r//g' LICENSE
-%{__perl} -pi -e 's/\r//g' NOTICE
+%setup -q -n apache-%{name}-%{version}
+# see patch files themselves for reasons for applying
+%patch0 -p1 -b .logfactor-home
+%patch1 -p1 -b .remove-dep-version
+%patch2 -p1 -b .remove-example
+%patch3 -p1 -b .remove-mvn-release
+%patch4 -p1 -b .remove-mvn-source
+%patch5 -p1 -b .remove-mvn-clirr
+%patch6 -p1 -b .remove-mvn-rat
+%patch7 -p1 -b .remove-and-contrib
+%patch8 -p1 -b .remove-tests
+%patch9 -p1 -b .xlink-javadoc
+
+sed -i 's/\r//g' LICENSE NOTICE site/css/*.css site/xref/*.css \
+    site/xref-test/*.css
+
+# fix encoding of mailbox files
+for i in contribs/JimMoore/mail*;do
+    iconv --from=ISO-8859-1 --to=UTF-8 "$i" > new
+    mv new "$i"
+done
 
 # remove all the stuff we'll build ourselves
 find . \( -name "*.jar" -o -name "*.class" \) -exec %__rm -f {} \;
 %__rm -rf docs/api
 
 
-%build
-# javac.source=1.1 doesn't work with Sun's 1.4.2_09/1.5.0_05
-%ant \
-	-Djavamail.jar=$(build-classpath javamail/mailapi) \
-	-Dactivation.jar=$(build-classpath jaf) \
-	-Djaxp.jaxp.jar.jar=$(build-classpath jaxp_parser_impl) \
-	-Djms.jar=$(build-classpath jms) \
-	-Djmx.jar=$(build-classpath mx4j/mx4j) \
-	-Djmx-extra.jar=$(build-classpath mx4j/mx4j-tools) \
-	-Djndi.jar=$(build-classpath jndi) \
-	-Djavac.source=1.2 \
-	-Djdk.javadoc=%{_javadocdir}/java \
-	jar javadoc
 
+%build
+export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
+mkdir -p $MAVEN_REPO_LOCAL
+
+# we don't need javadoc:javadoc because build system is broken and
+# builds javadoc when install-ing
+# also note that maven.test.skip doesn't really work and we had to
+# patch ant run of tests out of pom
+mvn-jpp -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
+        -Dmaven.test.skip=true \
+    install
 
 %install
-%__rm -rf %{buildroot}
+rm -rf %{buildroot}
 
 # jars
-%__mkdir_p %{buildroot}%{_javadir}
-%__cp -a dist/lib/%{name}-%{version}.jar %{buildroot}%{_javadir}
+#install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
+install -pD -T -m 644 target/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
 (cd %{buildroot}%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
 
 # javadoc
-%__mkdir_p %{buildroot}%{_javadocdir}/%{name}-%{version}
-%__cp -a docs/api/* %{buildroot}%{_javadocdir}/%{name}-%{version}
-(cd %{buildroot}%{_javadocdir} && %__ln_s %{name}-%{version} %{name})
-%__rm -rf docs/api
-ln -s %{_javadocdir}/log4j docs/api
+install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 # scripts
-%__mkdir_p %{buildroot}%{_bindir}
-%__install -p -m 755 %{SOURCE2} %{buildroot}%{_bindir}/logfactor5
-%__install -p -m 755 %{SOURCE5} %{buildroot}%{_bindir}/chainsaw
+install -pD -T -m 755 %{SOURCE2} %{buildroot}%{_bindir}/logfactor5
+install -pD -T -m 755 %{SOURCE5} %{buildroot}%{_bindir}/chainsaw
 
 # freedesktop.org menu entries and icons
-%__mkdir_p %{buildroot}%{_datadir}/{applications,pixmaps}
-%__cp -a %{SOURCE1} \
-  %{buildroot}%{_datadir}/pixmaps/logfactor5.png
-%__cp -a %{SOURCE3} \
-  %{buildroot}%{_datadir}/applications/jpackage-logfactor5.desktop
-%__cp -a %{SOURCE4} \
-  %{buildroot}%{_datadir}/pixmaps/chainsaw.png
-%__cp -a %{SOURCE6} \
-  %{buildroot}%{_datadir}/applications/jpackage-chainsaw.desktop
+install -pD -T -m 755 %{SOURCE1} \
+        %{buildroot}%{_datadir}/pixmaps/logfactor5.png
+desktop-file-install \
+     --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
+     %{SOURCE3}
+
+install -pD -T -m 755 %{SOURCE4} \
+        %{buildroot}%{_datadir}/pixmaps/chainsaw.png
+desktop-file-install \
+     --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
+     %{SOURCE6}
+
 
 # DTD and the SGML catalog (XML catalog handled in scriptlets)
-%__mkdir_p %{buildroot}%{_datadir}/sgml/%{name}
-%__cp -a src/java/org/apache/log4j/xml/log4j.dtd \
-  %{buildroot}%{_datadir}/sgml/%{name}
-%__cp -a %{SOURCE7} \
+install -pD -T -m 644 src/main/javadoc/org/apache/log4j/xml/doc-files/log4j.dtd \
+  %{buildroot}%{_datadir}/sgml/%{name}/log4j.dtd
+install -pD -T -m 644 %{SOURCE7} \
   %{buildroot}%{_datadir}/sgml/%{name}/catalog
 
 # fix perl location
@@ -179,9 +164,6 @@ ln -s %{_javadocdir}/log4j docs/api
 contribs/KitchingSimon/udpserver.pl
 
 
-%if %{gcj_support}
-%{_bindir}/aot-compile-rpm
-%endif
 
 %clean
 %__rm -rf %{buildroot}
@@ -200,12 +182,6 @@ if [ -x %{_bindir}/xmlcatalog -a -w %{_sysconfdir}/xml/catalog ]; then
     > /dev/null || :
 fi
 
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
 
 %preun
 if [ $1 -eq 0 ]; then
@@ -215,12 +191,6 @@ if [ $1 -eq 0 ]; then
   fi
 fi
 
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
 
 %postun
 # Note that we're using versioned catalog, so this is always ok.
@@ -230,49 +200,31 @@ if [ -x %{_bindir}/install-catalog -a -d %{_sysconfdir}/sgml ]; then
     %{_datadir}/sgml/%{name}/catalog > /dev/null || :
 fi
 
-%if %{gcj_support}
-if [ -x %{_bindir}/rebuild-gcj-db ]
-then
-  %{_bindir}/rebuild-gcj-db
-fi
-%endif
-
-%post javadoc
-%__rm -f %{_javadocdir}/%{name}
-%__ln_s %{name}-%{version} %{_javadocdir}/%{name}
-
-%postun javadoc
-if [ $1 -eq 0 ]; then
-  %__rm -f %{_javadocdir}/%{name}
-fi
-
-
 %files
 %defattr(-,root,root,-)
-%doc LICENSE
-%doc NOTICE
+%doc LICENSE NOTICE
 %{_bindir}/*
 %{_javadir}/*
 %{_datadir}/applications/*
 %{_datadir}/pixmaps/*
 %{_datadir}/sgml/%{name}
 
-%if %{gcj_support}
-%attr(-,root,root) %{_libdir}/gcj/%{name}/%{name}-%{version}.jar.*
-%endif
-
 %files manual
-%defattr(0644,root,root,0755)
-%doc docs/* contribs
+%defattr(-,root,root,-)
+%doc site/*.html site/css site/images/ site/xref site/xref-test contribs
 
 %files javadoc
-%defattr(0644,root,root,0755)
-%dir %{_javadocdir}/%{name}-%{version}
-%{_javadocdir}/%{name}-%{version}/*
-%ghost %dir %{_javadocdir}/%{name}
+%defattr(-,root,root,-)
+%doc %{_javadocdir}/%{name}-%{version}
+%doc %{_javadocdir}/%{name}
 
 
 %changelog
+* Mon May 17 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-1
+- Complete re-working of whole ebuild to work with maven
+- Rebase to new version
+- Drop gcj support
+
 * Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.14-6.3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 

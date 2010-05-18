@@ -2,8 +2,7 @@
 Name=Chainsaw
 Comment=Log4j log viewer
 Exec=chainsaw
-Icon=chainsaw.png
+Icon=chainsaw
 Terminal=false
 Type=Application
-Encoding=UTF-8
-Categories=GNOME;Application;Development;X-JPackage;
+Categories=GNOME;Application;Development;X-JPackage;GTK;
