@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.16
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -77,6 +77,7 @@ Requires:       %{name}-javadoc = %{version}-%{release}
 %package        javadoc
 Summary:        API documentation for %{name}
 Group:          Documentation
+Requires:       jpackage-utils
 
 %description    javadoc
 %{summary}.
@@ -130,6 +131,11 @@ rm -rf %{buildroot}
 install -pD -T -m 644 target/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
 (cd %{buildroot}%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
 
+# pom
+install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
+install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
+%add_to_maven_depmap %{name} %{name} %{version} JPP %{name}
+
 # javadoc
 install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
@@ -170,6 +176,7 @@ contribs/KitchingSimon/udpserver.pl
 
 
 %post
+%update_maven_depmap
 # Note that we're using versioned catalog, so this is always ok.
 if [ -x %{_bindir}/install-catalog -a -d %{_sysconfdir}/sgml ]; then
   %{_bindir}/install-catalog --add \
@@ -193,6 +200,7 @@ fi
 
 
 %postun
+%update_maven_depmap
 # Note that we're using versioned catalog, so this is always ok.
 if [ -x %{_bindir}/install-catalog -a -d %{_sysconfdir}/sgml ]; then
   %{_bindir}/install-catalog --remove \
@@ -205,6 +213,8 @@ fi
 %doc LICENSE NOTICE
 %{_bindir}/*
 %{_javadir}/*
+%{_mavenpomdir}/JPP-%{name}.pom
+%{_mavendepmapfragdir}/*
 %{_datadir}/applications/*
 %{_datadir}/pixmaps/*
 %{_datadir}/sgml/%{name}
@@ -220,6 +230,11 @@ fi
 
 
 %changelog
+* Fri May 28 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-2
+- Install pom file
+- Trim changelog
+- Add jpackage-utils to javadoc Requires
+
 * Mon May 17 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-1
 - Complete re-working of whole ebuild to work with maven
 - Rebase to new version
@@ -303,102 +318,3 @@ fi
 
 * Thu Nov  4 2004 Gary Benson <gbenson@redhat.com> 0:1.2.8-7jpp_2fc
 - Build into Fedora.
-
-* Thu Mar  4 2004 Frank Ch. Eigler <fche@redhat.com> - 0:1.2.8-7jpp_1rh
-- RH vacuuming
-
-* Sun Aug 31 2003 Ville Skyttä <ville.skytta at iki.fi> - 0:1.2.8-7jpp
-- Add scripts and freedesktop.org menu entries for LogFactor5 and Chainsaw.
-- Include log4j.dtd and install SGML/XML catalogs.
-- Require jpackage-utils, jaxp_parser_impl.
-- Crosslink with local xml-commons-apis javadocs.
-- Don't BuildRequire JUnit, the test suite is not included :(
-- Fix Group.
-
-* Sun May 11 2003 David Walluck <david@anti-microsoft.org> 0:1.2.8-6jpp
-- add jpackage-utils requirement
-- add epochs to all versioned requirements
-- use jmx explicitly for now until mx4j works
-
-* Thu Mar 21 2003 Nicolas Mailhot <Nicolas.Mailhot (at) laPoste.net> 1.2.8-3jpp
-- For jpackage-utils 1.5
-
-* Thu Feb 27 2003 Henri Gomez <hgomez@users.sourceforge.net> 1.2.8-2jpp
-- fix ASF license and add packager tag
-
-* Thu Feb 20 2003 Henri Gomez <hgomez@users.sourceforge.net> 1.2.8-1jpp
-- log4j 1.2.8
-
-* Thu Oct 10 2002 Henri Gomez <hgomez@users.sourceforge.net> 1.2.7-1jpp
-- log4j 1.2.7
-
-* Fri Aug 23 2002 Henri Gomez <hgomez@users.sourceforge.net> 1.2.6-1jpp
-- log4j 1.2.6
-
-* Wed Jul 10 2002 Henri Gomez <hgomez@users.sourceforge.net> 1.2.5-1jpp
-- log4j 1.2.5
-
-* Tue Jul 02 2002 Guillaume Rousse <guillomovitch@users.sourceforge.net> 1.2.4-2jpp
-- section macro
-
-* Thu Jun 20 2002 Henri Gomez <hgomez@users.sourceforge.net> 1.2.4-1jpp
-- log4j 1.2.4
-
-* Thu Jan 17 2002 Guillaume Rousse <guillomovitch@users.sourceforge.net> 1.1.3-8jpp
-- versioned dir for javadoc
-- drop j2ee package
-- no dependencies for manual and javadoc packages
-- adaptation for new jaf and javamail packages
-
-* Sat Dec 8 2001 Guillaume Rousse <guillomovitch@users.sourceforge.net> 1.1.3-7jpp
-- drop j2ee patch
-
-* Wed Dec 5 2001 Guillaume Rousse <guillomovitch@users.sourceforge.net> 1.1.3-6jpp
-- javadoc into javadoc package
-- drop %{name}-core.jar
-
-* Wed Nov 21 2001 Christian Zoffoli <czoffoli@littlepenguin.org> 1.1.3-5jpp
-- new jpp extension
-- fixed compilation (added activation in the classpath)
-- BuildRequires: jaf
-
-* Tue Nov 20 2001 Guillaume Rousse <guillomovitch@users.sourceforge.net> 1.1.3-4jpp
-- non-free extension classes back in original archive
-- removed packager tag
-
-* Tue Oct 9 2001 Guillaume Rousse <guillomovitch@users.sourceforge.net> 1.1.3-3jpp
-- first unified release
-- non-free extension as additional package
-- s/jPackage/JPackage
-
-* Tue Sep 04 2001 Guillaume Rousse <guillomovitch@users.sourceforge.net> 1.1.3-2mdk
-- rebuild with javamail to provide SMTP appender
-- add CVS references
-
-* Sun Aug 26 2001 Guillaume Rousse <guillomovitch@users.sourceforge.net> 1.1.3-1mdk
-- 1.1.3
-- used new source packaging policy
-- vendor tag
-- packager tag
-- s/Copyright/License/
-- truncated description to 72 columns in spec
-- spec cleanup
-- used versioned jar
-
-* Sat Feb 17 2001 Guillaume Rousse <g.rousse@linux-mandrake.com> 1.0.4-3mdk
-- spec cleanup
-- changelog correction
-- build with junit
-
-* Sun Feb 04 2001 Guillaume Rousse <g.rousse@linux-mandrake.com> 1.0.4-2mdk
-- merged with Henri Gomez <hgomez@users.sourceforge.net> specs:
--  changed name to log4j
--  changed javadir to /usr/share/java
--  dropped jdk & jre requirement
--  added jikes support
--  changed description
-- added xerces requirement
-- more macros
-
-* Sun Jan 14 2001 Guillaume Rousse <g.rousse@linux-mandrake.com> 1.0.4-1mdk
-- first Mandrake release
