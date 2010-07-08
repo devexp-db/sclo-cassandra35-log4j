@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.16
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -221,15 +221,20 @@ fi
 
 %files manual
 %defattr(-,root,root,-)
+%doc LICENSE NOTICE
 %doc site/*.html site/css site/images/ site/xref site/xref-test contribs
 
 %files javadoc
 %defattr(-,root,root,-)
+%doc LICENSE NOTICE
 %doc %{_javadocdir}/%{name}-%{version}
 %doc %{_javadocdir}/%{name}
 
 
 %changelog
+* Thu Jul  8 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-3
+- Add license to javadoc and manual subpackages
+
 * Fri May 28 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-2
 - Install pom file
 - Trim changelog
