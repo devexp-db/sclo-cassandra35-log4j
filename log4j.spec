@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.16
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -42,16 +42,17 @@ BuildRequires:  jpackage-utils >= 0:1.7.2
 BuildRequires:  maven-plugin-bundle
 BuildRequires:  maven-surefire-maven-plugin
 BuildRequires:  maven-surefire-provider-junit
-BuildRequires:  maven2-plugin-ant
-BuildRequires:  maven2-plugin-antrun
-BuildRequires:  maven2-plugin-assembly
-BuildRequires:  maven2-plugin-compiler
-BuildRequires:  maven2-plugin-idea
-BuildRequires:  maven2-plugin-install
-BuildRequires:  maven2-plugin-jar
-BuildRequires:  maven2-plugin-javadoc
-BuildRequires:  maven2-plugin-resources
-BuildRequires:  maven2-plugin-site
+BuildRequires:  maven-ant-plugin
+BuildRequires:  maven-antrun-plugin
+BuildRequires:  maven-assembly-plugin
+BuildRequires:  maven-compiler-plugin
+BuildRequires:  maven-idea-plugin
+BuildRequires:  maven-install-plugin
+BuildRequires:  maven-jar-plugin
+BuildRequires:  maven-javadoc-plugin
+BuildRequires:  maven-resources-plugin
+BuildRequires:  maven-site-plugin
+BuildRequires:  ant-junit
 
 
 Requires:       java >= 1:1.6.0
@@ -138,7 +139,7 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
 
 # javadoc
 install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+cp -pr target/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 # scripts
@@ -232,6 +233,10 @@ fi
 
 
 %changelog
+* Tue Sep  7 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-4
+- Fix BRs to include ant-junit
+- Fix changed path for javadocs after build run
+
 * Thu Jul  8 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-3
 - Add license to javadoc and manual subpackages
 
