@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.16
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -30,6 +30,7 @@ Patch6:         0007-Remove-mvn-rat-plugin.patch
 Patch7:         0008-Remove-ant-contrib-from-dependencies.patch
 Patch8:         0009-Remove-ant-run-of-tests.patch
 Patch9:         0010-Fix-javadoc-link.patch
+Patch10:        0011-Fix-ant-groupId.patch
 
 BuildRequires:  %{__perl}
 BuildRequires:  java >= 1:1.6.0
@@ -61,7 +62,6 @@ Requires(post):    jpackage-utils
 Requires(postun):  jpackage-utils
 Requires:       xml-commons-apis
 Requires:       jaxp_parser_impl
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %description
 Log4j is a tool to help the programmer output log statements to a
@@ -96,6 +96,7 @@ Requires:       jpackage-utils
 %patch7 -p1 -b .remove-and-contrib
 %patch8 -p1 -b .remove-tests
 %patch9 -p1 -b .xlink-javadoc
+%patch10 -p1 -b .ant-groupid
 
 sed -i 's/\r//g' LICENSE NOTICE site/css/*.css site/xref/*.css \
     site/xref-test/*.css
@@ -125,12 +126,9 @@ mvn-jpp -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
     install
 
 %install
-rm -rf %{buildroot}
-
 # jars
 #install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
-install -pD -T -m 644 target/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-(cd %{buildroot}%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
+install -pD -T -m 644 target/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
 
 # pom
 install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
@@ -138,9 +136,8 @@ install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
 %add_to_maven_depmap %{name} %{name} %{version} JPP %{name}
 
 # javadoc
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr target/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -pr target/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 # scripts
 install -pD -T -m 755 %{SOURCE2} %{buildroot}%{_bindir}/logfactor5
@@ -169,11 +166,6 @@ install -pD -T -m 644 %{SOURCE7} \
 # fix perl location
 %__perl -p -i -e 's|/opt/perl5/bin/perl|%{__perl}|' \
 contribs/KitchingSimon/udpserver.pl
-
-
-
-%clean
-%__rm -rf %{buildroot}
 
 
 %post
@@ -209,6 +201,12 @@ if [ -x %{_bindir}/install-catalog -a -d %{_sysconfdir}/sgml ]; then
     %{_datadir}/sgml/%{name}/catalog > /dev/null || :
 fi
 
+%pre javadoc
+# workaround rpm bug, can be removed in F-17
+[ $1 -gt 1 ] && [ -L %{_javadocdir}/%{name} ] && \
+rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
+
+
 %files
 %defattr(-,root,root,-)
 %doc LICENSE NOTICE
@@ -228,11 +226,14 @@ fi
 %files javadoc
 %defattr(-,root,root,-)
 %doc LICENSE NOTICE
-%doc %{_javadocdir}/%{name}-%{version}
 %doc %{_javadocdir}/%{name}
 
 
 %changelog
+* Thu Dec  9 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-5
+- Add patch to fix ant groupId
+- Versionless jars & javadocs
+
 * Tue Sep  7 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-4
 - Fix BRs to include ant-junit
 - Fix changed path for javadocs after build run
