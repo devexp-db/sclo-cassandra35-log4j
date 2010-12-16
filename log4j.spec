@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.16
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -61,7 +61,6 @@ Requires:       jpackage-utils >= 0:1.6
 Requires(post):    jpackage-utils
 Requires(postun):  jpackage-utils
 Requires:       xml-commons-apis
-Requires:       jaxp_parser_impl
 
 %description
 Log4j is a tool to help the programmer output log statements to a
@@ -230,6 +229,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Thu Dec 16 2010 Alexander Kurtakov <akurtako@redhat.com> 0:1.2.16-6
+- Do not require jaxp_parser_impl. Maven build is not using it all and it's provided by every Java5 JVM.
+
 * Thu Dec  9 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-5
 - Add patch to fix ant groupId
 - Versionless jars & javadocs
