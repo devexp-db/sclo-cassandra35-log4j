@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.16
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -122,7 +122,7 @@ mkdir -p $MAVEN_REPO_LOCAL
 # patch ant run of tests out of pom
 mvn-jpp -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
         -Dmaven.test.skip=true \
-    install
+        package
 
 %install
 # jars
@@ -229,6 +229,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Fri Dec 17 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-7
+- Use package instead of install mvn target to fix build
+
 * Thu Dec 16 2010 Alexander Kurtakov <akurtako@redhat.com> 0:1.2.16-6
 - Do not require jaxp_parser_impl. Maven build is not using it all and it's provided by every Java5 JVM.
 
