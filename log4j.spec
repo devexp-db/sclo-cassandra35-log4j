@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.16
-Release:        7%{?dist}
+Release:        8%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -143,13 +143,13 @@ install -pD -T -m 755 %{SOURCE2} %{buildroot}%{_bindir}/logfactor5
 install -pD -T -m 755 %{SOURCE5} %{buildroot}%{_bindir}/chainsaw
 
 # freedesktop.org menu entries and icons
-install -pD -T -m 755 %{SOURCE1} \
+install -pD -T -m 644 %{SOURCE1} \
         %{buildroot}%{_datadir}/pixmaps/logfactor5.png
 desktop-file-install \
      --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
      %{SOURCE3}
 
-install -pD -T -m 755 %{SOURCE4} \
+install -pD -T -m 644 %{SOURCE4} \
         %{buildroot}%{_datadir}/pixmaps/chainsaw.png
 desktop-file-install \
      --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
@@ -229,6 +229,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Tue Jan 18 2011 Ville Skyttä <ville.skytta@iki.fi> - 0:1.2.16-8
+- Drop executable file mode bits from icons.
+
 * Fri Dec 17 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.16-7
 - Use package instead of install mvn target to fix build
 
