@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.16
-Release:        8%{?dist}
+Release:        9%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -229,6 +229,9 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.16-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Tue Jan 18 2011 Ville Skyttä <ville.skytta@iki.fi> - 0:1.2.16-8
 - Drop executable file mode bits from icons.
 
