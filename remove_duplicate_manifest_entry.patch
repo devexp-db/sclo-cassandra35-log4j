@@ -1,0 +1,10 @@
+--- pom.xml.sav	2011-10-28 19:25:17.000000000 +0300
++++ pom.xml	2011-10-28 19:33:50.528628110 +0300
+@@ -382,7 +382,6 @@ target platform and specify -Dntdll_targ
+                                 javax.mail.*;resolution:=optional,
+                                 javax.management;resolution:=optional,
+                                 javax.naming;resolution:=optional,
+-                                com.sun.jdmk.comm;resolution:=optional,
+                                 com.ibm.uvm.tools;resolution:=optional,
+                                 javax.swing.*;resolution:=optional,
+                                 *</Import-Package>

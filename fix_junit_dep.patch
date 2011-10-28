@@ -1,0 +1,10 @@
+--- pom.xml.sav	2011-10-28 18:43:07.000000000 +0300
++++ pom.xml	2011-10-28 18:46:08.752757484 +0300
+@@ -277,7 +277,6 @@ target platform and specify -Dntdll_targ
+             <groupId>junit</groupId>
+             <artifactId>junit</artifactId>
+             <version>3.8.1</version>
+-            <scope>test</scope>
+           </dependency>
+           <dependency>
+             <groupId>sun.jdk</groupId>

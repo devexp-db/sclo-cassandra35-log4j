@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.16
-Release:        9%{?dist}
+Release:        10%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -21,16 +21,11 @@ Source5:        %{name}-chainsaw.sh
 Source6:        %{name}-chainsaw.desktop
 Source7:        %{name}.catalog
 Patch0:         0001-logfactor5-changed-userdir.patch
-Patch1:         0002-Remove-version-dependencies.patch
-Patch2:         0003-Removed-example-in-wrong-place.patch
-Patch3:         0004-Remove-mvn-release-plugin.patch
-Patch4:         0005-Remove-mvn-source-plugin.patch
-Patch5:         0006-Remove-mvn-clirr-plugin.patch
-Patch6:         0007-Remove-mvn-rat-plugin.patch
-Patch7:         0008-Remove-ant-contrib-from-dependencies.patch
-Patch8:         0009-Remove-ant-run-of-tests.patch
-Patch9:         0010-Fix-javadoc-link.patch
-Patch10:        0011-Fix-ant-groupId.patch
+Patch1:         0006-Remove-mvn-clirr-plugin.patch
+Patch2:         0009-Remove-ant-run-of-tests.patch
+Patch3:         0010-Fix-javadoc-link.patch
+Patch4:        fix_junit_dep.patch
+Patch5:        remove_duplicate_manifest_entry.patch
 
 BuildRequires:  %{__perl}
 BuildRequires:  java >= 1:1.6.0
@@ -54,12 +49,10 @@ BuildRequires:  maven-javadoc-plugin
 BuildRequires:  maven-resources-plugin
 BuildRequires:  maven-site-plugin
 BuildRequires:  ant-junit
-
+BuildRequires:  ant-contrib
 
 Requires:       java >= 1:1.6.0
 Requires:       jpackage-utils >= 0:1.6
-Requires(post):    jpackage-utils
-Requires(postun):  jpackage-utils
 Requires:       xml-commons-apis
 
 %description
@@ -86,16 +79,14 @@ Requires:       jpackage-utils
 %setup -q -n apache-%{name}-%{version}
 # see patch files themselves for reasons for applying
 %patch0 -p1 -b .logfactor-home
-%patch1 -p1 -b .remove-dep-version
-%patch2 -p1 -b .remove-example
-%patch3 -p1 -b .remove-mvn-release
-%patch4 -p1 -b .remove-mvn-source
-%patch5 -p1 -b .remove-mvn-clirr
-%patch6 -p1 -b .remove-mvn-rat
-%patch7 -p1 -b .remove-and-contrib
-%patch8 -p1 -b .remove-tests
-%patch9 -p1 -b .xlink-javadoc
-%patch10 -p1 -b .ant-groupid
+%patch1 -p1 -b .remove-mvn-clirr
+%patch2 -p1 -b .remove-tests
+%patch3 -p1 -b .xlink-javadoc
+
+%patch4
+%patch5
+
+sed -i "s|groupId>ant<|groupId>org.apache.ant<|g" pom.xml
 
 sed -i 's/\r//g' LICENSE NOTICE site/css/*.css site/xref/*.css \
     site/xref-test/*.css
@@ -113,16 +104,11 @@ find . \( -name "*.jar" -o -name "*.class" \) -exec %__rm -f {} \;
 
 
 %build
-export MAVEN_REPO_LOCAL=$(pwd)/.m2/repository
-mkdir -p $MAVEN_REPO_LOCAL
-
 # we don't need javadoc:javadoc because build system is broken and
 # builds javadoc when install-ing
 # also note that maven.test.skip doesn't really work and we had to
 # patch ant run of tests out of pom
-mvn-jpp -Dmaven.repo.local=$MAVEN_REPO_LOCAL \
-        -Dmaven.test.skip=true \
-        package
+mvn-rpmbuild package
 
 %install
 # jars
@@ -168,7 +154,6 @@ contribs/KitchingSimon/udpserver.pl
 
 
 %post
-%update_maven_depmap
 # Note that we're using versioned catalog, so this is always ok.
 if [ -x %{_bindir}/install-catalog -a -d %{_sysconfdir}/sgml ]; then
   %{_bindir}/install-catalog --add \
@@ -192,7 +177,6 @@ fi
 
 
 %postun
-%update_maven_depmap
 # Note that we're using versioned catalog, so this is always ok.
 if [ -x %{_bindir}/install-catalog -a -d %{_sysconfdir}/sgml ]; then
   %{_bindir}/install-catalog --remove \
@@ -200,14 +184,7 @@ if [ -x %{_bindir}/install-catalog -a -d %{_sysconfdir}/sgml ]; then
     %{_datadir}/sgml/%{name}/catalog > /dev/null || :
 fi
 
-%pre javadoc
-# workaround rpm bug, can be removed in F-17
-[ $1 -gt 1 ] && [ -L %{_javadocdir}/%{name} ] && \
-rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
-
-
 %files
-%defattr(-,root,root,-)
 %doc LICENSE NOTICE
 %{_bindir}/*
 %{_javadir}/*
@@ -218,17 +195,20 @@ rm -rf $(readlink -f %{_javadocdir}/%{name}) %{_javadocdir}/%{name} || :
 %{_datadir}/sgml/%{name}
 
 %files manual
-%defattr(-,root,root,-)
 %doc LICENSE NOTICE
 %doc site/*.html site/css site/images/ site/xref site/xref-test contribs
 
 %files javadoc
-%defattr(-,root,root,-)
 %doc LICENSE NOTICE
 %doc %{_javadocdir}/%{name}
 
 
 %changelog
+* Fri Oct 28 2011 Alexander Kurtakov <akurtako@redhat.com> 0:1.2.16-10
+- Remove duplicate import-package declaration.
+- Adapt to current guidelines.
+- Remove no longer needed patches.
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.16-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
