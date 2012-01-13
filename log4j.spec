@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.16
-Release:        10%{?dist}
+Release:        11%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -204,6 +204,9 @@ fi
 
 
 %changelog
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.16-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Fri Oct 28 2011 Alexander Kurtakov <akurtako@redhat.com> 0:1.2.16-10
 - Remove duplicate import-package declaration.
 - Adapt to current guidelines.
