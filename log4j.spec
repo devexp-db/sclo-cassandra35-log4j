@@ -36,7 +36,7 @@ BuildRequires:  geronimo-parent-poms
 BuildRequires:  desktop-file-utils
 BuildRequires:  jpackage-utils >= 0:1.7.2
 BuildRequires:  maven-plugin-bundle
-BuildRequires:  maven-surefire-maven-plugin
+BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit
 BuildRequires:  maven-ant-plugin
 BuildRequires:  maven-antrun-plugin
@@ -53,7 +53,6 @@ BuildRequires:  ant-contrib
 
 Requires:       java >= 1:1.6.0
 Requires:       jpackage-utils >= 0:1.6
-Requires:       xml-commons-apis
 
 %description
 Log4j is a tool to help the programmer output log statements to a
