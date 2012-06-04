@@ -2,15 +2,15 @@
 %global bootstrap %{?_with_bootstrap:1}%{!?_with_bootstrap:%{?_without_bootstrap:0}%{!?_without_bootstrap:%{?_bootstrap:%{_bootstrap}}%{!?_bootstrap:0}}}
 
 Name:           log4j
-Version:        1.2.16
-Release:        11%{?dist}
+Version:        1.2.17
+Release:        1%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
 Group:          Development/Libraries
 URL:            http://logging.apache.org/%{name}
-Source0:        http://www.apache.org/dist/logging/%{name}/%{version}/apache-%{name}-%{version}.tar.gz
+Source0:        http://www.apache.org/dist/logging/%{name}/%{version}/%{name}-%{version}.tar.gz
 # Converted from src/java/org/apache/log4j/lf5/viewer/images/lf5_small_icon.gif
 Source1:        %{name}-logfactor5.png
 Source2:        %{name}-logfactor5.sh
@@ -24,8 +24,8 @@ Patch0:         0001-logfactor5-changed-userdir.patch
 Patch1:         0006-Remove-mvn-clirr-plugin.patch
 Patch2:         0009-Remove-ant-run-of-tests.patch
 Patch3:         0010-Fix-javadoc-link.patch
-Patch4:        fix_junit_dep.patch
-Patch5:        remove_duplicate_manifest_entry.patch
+Patch4:         0011-Remove-openejb.patch
+Patch5:         0012-Add-proper-bundle-symbolicname.patch
 
 BuildRequires:  %{__perl}
 BuildRequires:  java >= 1:1.6.0
@@ -41,6 +41,7 @@ BuildRequires:  maven-surefire-provider-junit
 BuildRequires:  maven-ant-plugin
 BuildRequires:  maven-antrun-plugin
 BuildRequires:  maven-assembly-plugin
+BuildRequires:  maven-changes-plugin
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-idea-plugin
 BuildRequires:  maven-install-plugin
@@ -48,6 +49,7 @@ BuildRequires:  maven-jar-plugin
 BuildRequires:  maven-javadoc-plugin
 BuildRequires:  maven-resources-plugin
 BuildRequires:  maven-site-plugin
+BuildRequires:  maven-skins
 BuildRequires:  ant-junit
 BuildRequires:  ant-contrib
 
@@ -81,9 +83,8 @@ Requires:       jpackage-utils
 %patch1 -p1 -b .remove-mvn-clirr
 %patch2 -p1 -b .remove-tests
 %patch3 -p1 -b .xlink-javadoc
-
-%patch4
-%patch5
+%patch4 -p1 -b .openejb
+%patch5 -p1 -b .bundlename
 
 sed -i "s|groupId>ant<|groupId>org.apache.ant<|g" pom.xml
 
@@ -107,7 +108,7 @@ find . \( -name "*.jar" -o -name "*.class" \) -exec %__rm -f {} \;
 # builds javadoc when install-ing
 # also note that maven.test.skip doesn't really work and we had to
 # patch ant run of tests out of pom
-mvn-rpmbuild package
+mvn-rpmbuild verify
 
 %install
 # jars
@@ -117,7 +118,8 @@ install -pD -T -m 644 target/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%
 # pom
 install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
 install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
-%add_to_maven_depmap %{name} %{name} %{version} JPP %{name}
+
+%add_maven_depmap
 
 # javadoc
 install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
@@ -203,6 +205,11 @@ fi
 
 
 %changelog
+* Mon Jun 04 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.17-1
+- Update to latest version
+- Change OSGI bundle symbolic name to org.apache.log4j
+- Resolves #826776
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.16-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 

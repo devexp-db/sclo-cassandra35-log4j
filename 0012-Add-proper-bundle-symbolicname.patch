@@ -1,0 +1,31 @@
+From 65653d73ec206041ace3892a969ac5298ec32d73 Mon Sep 17 00:00:00 2001
+From: Stanislav Ochotnicky <sochotnicky@redhat.com>
+Date: Mon, 4 Jun 2012 10:41:13 +0200
+Subject: [PATCH] Add proper bundle-symbolicname
+
+Also remove dependency on yet unpackages jmdns
+---
+ pom.xml |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/pom.xml b/pom.xml
+index 0c330cc..4b8eb8f 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -405,11 +405,12 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
+ 		<Import-Package>!javax.swing.*,
+ 				!com.ibm.uvm.tools.*,
+ 				!com.sun.jdmk.comm.*,
+-				javax.jmdns.*;resolution:=optional,
++				!javax.jmdns.*,
+ 				javax.jms.*;resolution:=optional,
+ 				javax.mail.*;resolution:=optional,
+                                 *</Import-Package>
+                 <Bundle-DocURL>http://logging.apache.org/log4j/1.2</Bundle-DocURL>
++                <Bundle-SymbolicName>org.apache.log4j</Bundle-SymbolicName>
+             </instructions>
+         </configuration>
+       </plugin>
+-- 
+1.7.10.2
+

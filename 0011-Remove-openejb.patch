@@ -1,0 +1,18 @@
+diff --git a/pom.xml b/pom.xml
+index 2e6acaa..0c330cc 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -513,13 +513,6 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
+       <version>1.4.3</version>
+       <optional>true</optional>
+     </dependency>
+-    <dependency>
+-      <groupId>org.apache.openejb</groupId>
+-      <artifactId>javaee-api</artifactId>
+-      <version>5.0-2</version>
+-      <type>jar</type>
+-      <scope>provided</scope>
+-    </dependency>
+     <!--  the following dependency is not needed on JDK 1.5 and higher 
+     <dependency>
+       <groupId>com.sun.jmx</groupId>
