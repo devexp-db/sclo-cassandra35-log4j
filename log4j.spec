@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -205,6 +205,9 @@ fi
 
 
 %changelog
+* Thu Jun 14 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.17-2
+- Remove "uses" OSGI directives from MANIFEST (related #826776)
+
 * Mon Jun 04 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.17-1
 - Update to latest version
 - Change OSGI bundle symbolic name to org.apache.log4j
