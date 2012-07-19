@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -205,6 +205,9 @@ fi
 
 
 %changelog
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.17-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Thu Jun 14 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.17-2
 - Remove "uses" OSGI directives from MANIFEST (related #826776)
 
