@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -38,18 +38,14 @@ BuildRequires:  jpackage-utils >= 0:1.7.2
 BuildRequires:  maven-plugin-bundle
 BuildRequires:  maven-surefire-plugin
 BuildRequires:  maven-surefire-provider-junit
-BuildRequires:  maven-ant-plugin
 BuildRequires:  maven-antrun-plugin
 BuildRequires:  maven-assembly-plugin
-BuildRequires:  maven-changes-plugin
 BuildRequires:  maven-compiler-plugin
 BuildRequires:  maven-idea-plugin
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-jar-plugin
 BuildRequires:  maven-javadoc-plugin
 BuildRequires:  maven-resources-plugin
-BuildRequires:  maven-site-plugin
-BuildRequires:  maven-skins
 BuildRequires:  ant-junit
 BuildRequires:  ant-contrib
 
@@ -85,6 +81,7 @@ Requires:       jpackage-utils
 %patch3 -p1 -b .xlink-javadoc
 %patch4 -p1 -b .openejb
 %patch5 -p1 -b .bundlename
+%pom_remove_plugin :maven-site-plugin
 
 sed -i "s|groupId>ant<|groupId>org.apache.ant<|g" pom.xml
 
@@ -100,7 +97,6 @@ done
 # remove all the stuff we'll build ourselves
 find . \( -name "*.jar" -o -name "*.class" \) -exec %__rm -f {} \;
 %__rm -rf docs/api
-
 
 
 %build
@@ -205,6 +201,9 @@ fi
 
 
 %changelog
+* Mon Sep 24 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-4
+- Generate javadocs without maven skin
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.17-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
