@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -27,6 +27,7 @@ Patch3:         0010-Fix-javadoc-link.patch
 Patch4:         0011-Remove-openejb.patch
 Patch5:         0012-Add-proper-bundle-symbolicname.patch
 
+BuildRequires:  xmvn
 BuildRequires:  %{__perl}
 BuildRequires:  java >= 1:1.6.0
 BuildRequires:  jpackage-utils >= 0:1.6
@@ -49,8 +50,6 @@ BuildRequires:  maven-resources-plugin
 BuildRequires:  ant-junit
 BuildRequires:  ant-contrib
 
-Requires:       java >= 1:1.6.0
-Requires:       jpackage-utils >= 0:1.6
 
 %description
 Log4j is a tool to help the programmer output log statements to a
@@ -67,7 +66,6 @@ Requires:       %{name}-javadoc = %{version}-%{release}
 %package        javadoc
 Summary:        API documentation for %{name}
 Group:          Documentation
-Requires:       jpackage-utils
 
 %description    javadoc
 %{summary}.
@@ -104,18 +102,11 @@ find . \( -name "*.jar" -o -name "*.class" \) -exec %__rm -f {} \;
 # builds javadoc when install-ing
 # also note that maven.test.skip doesn't really work and we had to
 # patch ant run of tests out of pom
-mvn-rpmbuild verify
+%mvn_file : %{name}
+%mvn_build -f -j
 
 %install
-# jars
-#install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
-install -pD -T -m 644 target/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
-
-# pom
-install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
-install -pm 644 pom.xml $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
-
-%add_maven_depmap
+%mvn_install
 
 # javadoc
 install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
@@ -181,12 +172,9 @@ if [ -x %{_bindir}/install-catalog -a -d %{_sysconfdir}/sgml ]; then
     %{_datadir}/sgml/%{name}/catalog > /dev/null || :
 fi
 
-%files
+%files -f .mfiles
 %doc LICENSE NOTICE
 %{_bindir}/*
-%{_javadir}/*
-%{_mavenpomdir}/JPP-%{name}.pom
-%{_mavendepmapfragdir}/*
 %{_datadir}/applications/*
 %{_datadir}/pixmaps/*
 %{_datadir}/sgml/%{name}
@@ -201,6 +189,9 @@ fi
 
 
 %changelog
+* Fri Jan 18 2013 Michal Srb <msrb@redhat.com> - 0:1.2.17-5
+- Build with xmvn
+
 * Mon Sep 24 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-4
 - Generate javadocs without maven skin
 
