@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -93,24 +93,16 @@ for i in contribs/JimMoore/mail*;do
 done
 
 # remove all the stuff we'll build ourselves
-find . \( -name "*.jar" -o -name "*.class" \) -exec %__rm -f {} \;
-%__rm -rf docs/api
+find -name "*.jar" -o -name "*.class" -delete
+rm -rf docs/api
 
 
 %build
-# we don't need javadoc:javadoc because build system is broken and
-# builds javadoc when install-ing
-# also note that maven.test.skip doesn't really work and we had to
-# patch ant run of tests out of pom
 %mvn_file : %{name}
-%mvn_build -f -j
+%mvn_build -f
 
 %install
 %mvn_install
-
-# javadoc
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-cp -pr target/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 # scripts
 install -pD -T -m 755 %{SOURCE2} %{buildroot}%{_bindir}/logfactor5
@@ -189,6 +181,9 @@ fi
 
 
 %changelog
+* Mon Jan 21 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-6
+- Build aggregated javadocs with xmvn
+
 * Fri Jan 18 2013 Michal Srb <msrb@redhat.com> - 0:1.2.17-5
 - Build with xmvn
 
