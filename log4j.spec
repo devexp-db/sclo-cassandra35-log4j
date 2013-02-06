@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -27,7 +27,7 @@ Patch3:         0010-Fix-javadoc-link.patch
 Patch4:         0011-Remove-openejb.patch
 Patch5:         0012-Add-proper-bundle-symbolicname.patch
 
-BuildRequires:  xmvn
+BuildRequires:  maven-local
 BuildRequires:  %{__perl}
 BuildRequires:  java >= 1:1.6.0
 BuildRequires:  jpackage-utils >= 0:1.6
@@ -181,6 +181,10 @@ fi
 
 
 %changelog
+* Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 0:1.2.17-7
+- Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
+- Replace maven BuildRequires with maven-local
+
 * Mon Jan 21 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-6
 - Build aggregated javadocs with xmvn
 
