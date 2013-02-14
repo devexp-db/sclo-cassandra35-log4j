@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        7%{?dist}
+Release:        8%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -181,6 +181,9 @@ fi
 
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.17-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 0:1.2.17-7
 - Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
 - Replace maven BuildRequires with maven-local
