@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        8%{?dist}
+Release:        9%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -12,14 +12,14 @@ Group:          Development/Libraries
 URL:            http://logging.apache.org/%{name}
 Source0:        http://www.apache.org/dist/logging/%{name}/%{version}/%{name}-%{version}.tar.gz
 # Converted from src/java/org/apache/log4j/lf5/viewer/images/lf5_small_icon.gif
-Source1:        %{name}-logfactor5.png
-Source2:        %{name}-logfactor5.sh
-Source3:        %{name}-logfactor5.desktop
+Source101:      %{name}-logfactor5.png
+Source102:      %{name}-logfactor5.sh
+Source103:      %{name}-logfactor5.desktop
 # Converted from docs/images/logo.jpg
-Source4:        %{name}-chainsaw.png
-Source5:        %{name}-chainsaw.sh
-Source6:        %{name}-chainsaw.desktop
-Source7:        %{name}.catalog
+Source111:      %{name}-chainsaw.png
+Source112:      %{name}-chainsaw.sh
+Source113:      %{name}-chainsaw.desktop
+Source200:      %{name}.catalog
 Patch0:         0001-logfactor5-changed-userdir.patch
 Patch1:         0006-Remove-mvn-clirr-plugin.patch
 Patch2:         0009-Remove-ant-run-of-tests.patch
@@ -105,27 +105,27 @@ rm -rf docs/api
 %mvn_install
 
 # scripts
-install -pD -T -m 755 %{SOURCE2} %{buildroot}%{_bindir}/logfactor5
-install -pD -T -m 755 %{SOURCE5} %{buildroot}%{_bindir}/chainsaw
+install -pD -T -m 755 %{SOURCE102} %{buildroot}%{_bindir}/logfactor5
+install -pD -T -m 755 %{SOURCE112} %{buildroot}%{_bindir}/chainsaw
 
 # freedesktop.org menu entries and icons
-install -pD -T -m 644 %{SOURCE1} \
+install -pD -T -m 644 %{SOURCE101} \
         %{buildroot}%{_datadir}/pixmaps/logfactor5.png
 desktop-file-install \
      --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
-     %{SOURCE3}
+     %{SOURCE103}
 
-install -pD -T -m 644 %{SOURCE4} \
+install -pD -T -m 644 %{SOURCE111} \
         %{buildroot}%{_datadir}/pixmaps/chainsaw.png
 desktop-file-install \
      --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
-     %{SOURCE6}
+     %{SOURCE113}
 
 
 # DTD and the SGML catalog (XML catalog handled in scriptlets)
 install -pD -T -m 644 src/main/javadoc/org/apache/log4j/xml/doc-files/log4j.dtd \
   %{buildroot}%{_datadir}/sgml/%{name}/log4j.dtd
-install -pD -T -m 644 %{SOURCE7} \
+install -pD -T -m 644 %{SOURCE200} \
   %{buildroot}%{_datadir}/sgml/%{name}/catalog
 
 # fix perl location
@@ -181,6 +181,9 @@ fi
 
 
 %changelog
+* Mon Apr  8 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-9
+- Reindex sources in more sensible way
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.17-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
