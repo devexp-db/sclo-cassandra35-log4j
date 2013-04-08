@@ -15,10 +15,12 @@ Source0:        http://www.apache.org/dist/logging/%{name}/%{version}/%{name}-%{
 Source101:      %{name}-logfactor5.png
 Source102:      %{name}-logfactor5.sh
 Source103:      %{name}-logfactor5.desktop
+Source104:      %{name}-logfactor5.1
 # Converted from docs/images/logo.jpg
 Source111:      %{name}-chainsaw.png
 Source112:      %{name}-chainsaw.sh
 Source113:      %{name}-chainsaw.desktop
+Source114:      %{name}-chainsaw.1
 Source200:      %{name}.catalog
 Patch0:         0001-logfactor5-changed-userdir.patch
 Patch1:         0006-Remove-mvn-clirr-plugin.patch
@@ -121,6 +123,10 @@ desktop-file-install \
      --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
      %{SOURCE113}
 
+# Manual pages
+install -d -m 755 ${RPM_BUILD_ROOT}%{_mandir}/man1
+install -p -m 644 %{SOURCE104} ${RPM_BUILD_ROOT}%{_mandir}/man1
+install -p -m 644 %{SOURCE114} ${RPM_BUILD_ROOT}%{_mandir}/man1
 
 # DTD and the SGML catalog (XML catalog handled in scriptlets)
 install -pD -T -m 644 src/main/javadoc/org/apache/log4j/xml/doc-files/log4j.dtd \
@@ -167,6 +173,7 @@ fi
 %files -f .mfiles
 %doc LICENSE NOTICE
 %{_bindir}/*
+%{_mandir}/*/*
 %{_datadir}/applications/*
 %{_datadir}/pixmaps/*
 %{_datadir}/sgml/%{name}
@@ -183,6 +190,7 @@ fi
 %changelog
 * Mon Apr  8 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-9
 - Reindex sources in more sensible way
+- Add manual pages; resolves: rhbz#949413
 
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.17-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
