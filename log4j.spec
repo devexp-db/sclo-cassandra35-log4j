@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        9%{?dist}
+Release:        10%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -125,8 +125,8 @@ desktop-file-install \
 
 # Manual pages
 install -d -m 755 ${RPM_BUILD_ROOT}%{_mandir}/man1
-install -p -m 644 %{SOURCE104} ${RPM_BUILD_ROOT}%{_mandir}/man1
-install -p -m 644 %{SOURCE114} ${RPM_BUILD_ROOT}%{_mandir}/man1
+install -p -m 644 %{SOURCE104} ${RPM_BUILD_ROOT}%{_mandir}/man1/logfactor5.1
+install -p -m 644 %{SOURCE114} ${RPM_BUILD_ROOT}%{_mandir}/man1/chainsaw.1
 
 # DTD and the SGML catalog (XML catalog handled in scriptlets)
 install -pD -T -m 644 src/main/javadoc/org/apache/log4j/xml/doc-files/log4j.dtd \
@@ -188,6 +188,9 @@ fi
 
 
 %changelog
+* Thu Apr 11 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-10
+- Fix manpage names, thanks to Michal Srb for reporting
+
 * Mon Apr  8 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-9
 - Reindex sources in more sensible way
 - Add manual pages; resolves: rhbz#949413
