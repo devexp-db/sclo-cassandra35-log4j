@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        10%{?dist}
+Release:        11%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -44,7 +44,6 @@ BuildRequires:  maven-surefire-provider-junit
 BuildRequires:  maven-antrun-plugin
 BuildRequires:  maven-assembly-plugin
 BuildRequires:  maven-compiler-plugin
-BuildRequires:  maven-idea-plugin
 BuildRequires:  maven-install-plugin
 BuildRequires:  maven-jar-plugin
 BuildRequires:  maven-javadoc-plugin
@@ -188,6 +187,9 @@ fi
 
 
 %changelog
+* Mon Apr 29 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-11
+- Remove unneeded BR: maven-idea-plugin
+
 * Thu Apr 11 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-10
 - Fix manpage names, thanks to Michal Srb for reporting
 
