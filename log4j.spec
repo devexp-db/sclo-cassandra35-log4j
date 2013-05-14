@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        11%{?dist}
+Release:        12%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -146,6 +146,9 @@ if [ -x %{_bindir}/install-catalog -a -d %{_sysconfdir}/sgml ]; then
     %{_datadir}/sgml/%{name}/catalog > /dev/null || :
 fi
 if [ -x %{_bindir}/xmlcatalog -a -w %{_sysconfdir}/xml/catalog ]; then
+  %{_bindir}/xmlcatalog --noout --add public "-//APACHE//DTD LOG4J 1.2//EN" \
+    file://%{_datadir}/sgml/%{name}/log4j.dtd %{_sysconfdir}/xml/catalog \
+    > /dev/null
   %{_bindir}/xmlcatalog --noout --add system log4j.dtd \
     file://%{_datadir}/sgml/%{name}/log4j.dtd %{_sysconfdir}/xml/catalog \
     > /dev/null || :
@@ -155,7 +158,8 @@ fi
 %preun
 if [ $1 -eq 0 ]; then
   if [ -x %{_bindir}/xmlcatalog -a -w %{_sysconfdir}/xml/catalog ]; then
-    %{_bindir}/xmlcatalog --noout --del log4j.dtd \
+    %{_bindir}/xmlcatalog --noout --del \
+      file://%{_datadir}/sgml/%{name}/log4j.dtd \
       %{_sysconfdir}/xml/catalog > /dev/null || :
   fi
 fi
@@ -187,6 +191,9 @@ fi
 
 
 %changelog
+* Tue May 14 2013 Ville Skyttä <ville.skytta@iki.fi> - 0:1.2.17-12
+- Add DTD public id to XML and SGML catalogs.
+
 * Mon Apr 29 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:1.2.17-11
 - Remove unneeded BR: maven-idea-plugin
 
