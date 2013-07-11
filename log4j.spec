@@ -3,12 +3,11 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        12%{?dist}
+Release:        13%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
-Group:          Development/Libraries
 URL:            http://logging.apache.org/%{name}
 Source0:        http://www.apache.org/dist/logging/%{name}/%{version}/%{name}-%{version}.tar.gz
 # Converted from src/java/org/apache/log4j/lf5/viewer/images/lf5_small_icon.gif
@@ -24,33 +23,20 @@ Source114:      %{name}-chainsaw.1
 Source200:      %{name}.catalog
 Patch0:         0001-logfactor5-changed-userdir.patch
 Patch1:         0006-Remove-mvn-clirr-plugin.patch
-Patch2:         0009-Remove-ant-run-of-tests.patch
+Patch2:         0009-Fix-tests.patch
 Patch3:         0010-Fix-javadoc-link.patch
 Patch4:         0011-Remove-openejb.patch
 Patch5:         0012-Add-proper-bundle-symbolicname.patch
 
-BuildRequires:  maven-local
 BuildRequires:  %{__perl}
-BuildRequires:  java >= 1:1.6.0
-BuildRequires:  jpackage-utils >= 0:1.6
-BuildRequires:  javamail
-BuildRequires:  geronimo-jms
-BuildRequires:  geronimo-parent-poms
 BuildRequires:  desktop-file-utils
-BuildRequires:  jpackage-utils >= 0:1.7.2
-BuildRequires:  maven-plugin-bundle
-BuildRequires:  maven-surefire-plugin
-BuildRequires:  maven-surefire-provider-junit
-BuildRequires:  maven-antrun-plugin
-BuildRequires:  maven-assembly-plugin
-BuildRequires:  maven-compiler-plugin
-BuildRequires:  maven-install-plugin
-BuildRequires:  maven-jar-plugin
-BuildRequires:  maven-javadoc-plugin
-BuildRequires:  maven-resources-plugin
-BuildRequires:  ant-junit
+BuildRequires:  maven-local
+BuildRequires:  javamail
+BuildRequires:  junit
+BuildRequires:  geronimo-jms
+BuildRequires:  jakarta-oro
 BuildRequires:  ant-contrib
-
+BuildRequires:  ant-junit
 
 %description
 Log4j is a tool to help the programmer output log statements to a
@@ -58,7 +44,6 @@ variety of output targets.
 
 %package        manual
 Summary:        Developer manual for %{name}
-Group:          Documentation
 Requires:       %{name}-javadoc = %{version}-%{release}
 
 %description    manual
@@ -66,7 +51,6 @@ Requires:       %{name}-javadoc = %{version}-%{release}
 
 %package        javadoc
 Summary:        API documentation for %{name}
-Group:          Documentation
 
 %description    javadoc
 %{summary}.
@@ -76,7 +60,7 @@ Group:          Documentation
 # see patch files themselves for reasons for applying
 %patch0 -p1 -b .logfactor-home
 %patch1 -p1 -b .remove-mvn-clirr
-%patch2 -p1 -b .remove-tests
+%patch2 -p1 -b .fix-tests
 %patch3 -p1 -b .xlink-javadoc
 %patch4 -p1 -b .openejb
 %patch5 -p1 -b .bundlename
@@ -97,10 +81,18 @@ done
 find -name "*.jar" -o -name "*.class" -delete
 rm -rf docs/api
 
+# Needed by tests
+mkdir -p tests/lib/
+(cd tests/lib/
+  ln -s `build-classpath jakarta-oro`
+  ln -s `build-classpath javamail/mail`
+  ln -s `build-classpath junit`
+)
+
 
 %build
 %mvn_file : %{name}
-%mvn_build -f
+%mvn_build
 
 %install
 %mvn_install
@@ -191,6 +183,10 @@ fi
 
 
 %changelog
+* Thu Jul 11 2013 Michal Srb <msrb@redhat.com> - 0:1.2.17-13
+- Enable tests
+- Fix BR
+
 * Tue May 14 2013 Ville Skyttä <ville.skytta@iki.fi> - 0:1.2.17-12
 - Add DTD public id to XML and SGML catalogs.
 
