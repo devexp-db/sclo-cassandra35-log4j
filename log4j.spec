@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        13%{?dist}
+Release:        14%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -183,6 +183,9 @@ fi
 
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.17-14
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Thu Jul 11 2013 Michal Srb <msrb@redhat.com> - 0:1.2.17-13
 - Enable tests
 - Fix BR
