@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        14%{?dist}
+Release:        15%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -88,6 +88,9 @@ mkdir -p tests/lib/
   ln -s `build-classpath javamail/mail`
   ln -s `build-classpath junit`
 )
+
+%pom_xpath_inject "pom:dependency[pom:groupId='javax.mail']" '<scope>provided</scope>'
+%pom_xpath_inject "pom:dependency[pom:groupId='org.apache.geronimo.specs']" '<scope>provided</scope>'
 
 
 %build
@@ -183,6 +186,9 @@ fi
 
 
 %changelog
+* Thu Feb 20 2014 Michael Simacek <msimacek@redhat.com> - 0:1.2.17-15
+- Set javamail and geronimo-jms dependency scopes to provided (removes requires)
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:1.2.17-14
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
