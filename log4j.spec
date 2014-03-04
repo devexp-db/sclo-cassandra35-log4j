@@ -3,7 +3,7 @@
 
 Name:           log4j
 Version:        1.2.17
-Release:        15%{?dist}
+Release:        16%{?dist}
 Epoch:          0
 Summary:        Java logging package
 BuildArch:      noarch
@@ -186,6 +186,9 @@ fi
 
 
 %changelog
+* Tue Mar 04 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:1.2.17-16
+- Use Requires: java-headless rebuild (#1067528)
+
 * Thu Feb 20 2014 Michael Simacek <msimacek@redhat.com> - 0:1.2.17-15
 - Set javamail and geronimo-jms dependency scopes to provided (removes requires)
 
