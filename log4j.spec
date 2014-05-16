@@ -1,11 +1,8 @@
-
-%global bootstrap %{?_with_bootstrap:1}%{!?_with_bootstrap:%{?_without_bootstrap:0}%{!?_without_bootstrap:%{?_bootstrap:%{_bootstrap}}%{!?_bootstrap:0}}}
 %global reltag rc1
 
 Name:           log4j
 Version:        2.0
-Release:        0.1.%{reltag}%{?dist}
-Epoch:          0
+Release:        0.2.%{reltag}%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -86,7 +83,6 @@ monitoring StatusLogger output. Includes a JConsole plug-in.
 %package        javadoc
 Summary:        API documentation for %{name}
 Obsoletes:      %{name}-manual < %{version}
-Provides:       %{name}-manual = %{version}
 
 %description    javadoc
 %{summary}.
@@ -159,6 +155,7 @@ rm -rf docs/api
 
 %jpackage_script org.apache.logging.log4j.jmx.gui.ClientGUI '' '' %{name}/%{name}-jmx-gui:%{name}/%{name}-core %{name}-jmx false
 
+# TODO: Remove this in F-24
 %preun
 if [ $1 -eq 0 ]; then
   if [ -x xmlcatalog -a -w %{_sysconfdir}/xml/catalog ]; then
@@ -168,7 +165,7 @@ if [ $1 -eq 0 ]; then
   fi
 fi
 
-
+# TODO: Remove this in F-24
 %postun
 # Note that we're using versioned catalog, so this is always ok.
 if [ -x install-catalog -a -d %{_sysconfdir}/sgml ]; then
@@ -193,6 +190,9 @@ fi
 
 
 %changelog
+* Fri May 16 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.0-0.2.rc1
+- Drop provides for log4j-manual
+
 * Fri May 09 2014 Michael Simacek <msimacek@redhat.com> - 0:2.0-0.1.rc1
 - Update to upstream version 2.0-rc1
 - Split into subpackages
