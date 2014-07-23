@@ -1,13 +1,11 @@
-%global reltag rc1
-
 Name:           log4j
 Version:        2.0
-Release:        0.3.%{reltag}%{?dist}
+Release:        1%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
 URL:            http://logging.apache.org/%{name}
-Source0:        http://www.apache.org/dist/logging/%{name}/%{version}-%{reltag}/apache-%{name}-%{version}-%{reltag}-src.tar.gz
+Source0:        http://www.apache.org/dist/logging/%{name}/%{version}/apache-%{name}-%{version}-src.tar.gz
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-core)
@@ -42,13 +40,19 @@ BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.slf4j:slf4j-ext)
 BuildRequires:  mvn(org.springframework:spring-core)
 BuildRequires:  mvn(org.springframework:spring-test)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-failsafe-plugin)
+BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml)
+BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-yaml)
+BuildRequires:  mvn(org.jboss.spec.javax.jms:jboss-jms-api_1.1_spec)
+
+Obsoletes:      %{name}-osgi < %{version}-%{release}
 
 %description
 Log4j is a tool to help the programmer output log statements to a
 variety of output targets.
 
 %package osgi
-Summary:        pache Log4J Core OSGi Bundles
+Summary:        Apache Log4J Core OSGi Bundles
 
 %description osgi
 Apache Log4J Core OSGi Bundles.
@@ -79,6 +83,23 @@ Requires:       java-devel
 Swing-based client for remotely editing the log4j configuration and remotely
 monitoring StatusLogger output. Includes a JConsole plug-in.
 
+%package web
+Summary:        Apache Log4j Web
+
+%description web
+Support for Log4j in a web servlet container.
+
+%package bom
+Summary:        Apache Log4j BOM
+
+%description bom
+Apache Log4j 2 Bill of Material
+
+%package nosql
+Summary:        Apache Log4j NoSql
+
+%description nosql
+Use NoSQL databases such as MongoDB and CouchDB to append log messages.
 
 %package        javadoc
 Summary:        API documentation for %{name}
@@ -88,7 +109,7 @@ Obsoletes:      %{name}-manual < %{version}
 %{summary}.
 
 %prep
-%setup -q -n apache-%{name}-%{version}-%{reltag}-src
+%setup -q -n apache-%{name}-%{version}-src
 
 %pom_remove_plugin :maven-site-plugin
 
@@ -102,30 +123,26 @@ rm -rf docs/api
 # Apache Flume is not in Fedora yet
 %pom_disable_module %{name}-flume-ng
 
+# jmh not available
+%pom_disable_module %{name}-perf
+
 # System scoped dep provided by JDK
 %pom_remove_dep :jconsole %{name}-jmx-gui
 %pom_add_dep sun.jdk:jconsole %{name}-jmx-gui
 
-# Different AID, provided by felix/equinox
-%pom_remove_dep org.osgi:core
-%pom_remove_dep org.osgi:core %{name}-core
+# Different AID, provided by equinox
+%pom_remove_dep :org.osgi.core pom.xml %{name}-core %{name}-api
 
 # Classpath hell, equinox must come before felix
-%pom_remove_dep org.eclipse.osgi:org.eclipse.osgi %{name}-api
-%pom_add_dep org.eclipse.osgi:org.eclipse.osgi:3.6.0.v20100517:provided %{name}-api
+%pom_remove_dep org.eclipse.osgi:org.eclipse.osgi %{name}-core
+%pom_add_dep org.eclipse.osgi:org.eclipse.osgi:any:provided %{name}-core
 
 # Old version of specification
 %pom_remove_dep :javax.persistence %{name}-core
 %pom_add_dep org.hibernate.javax.persistence:hibernate-jpa-2.1-api:any:provided %{name}-core
 
 # Do not generate requires on optional dependencies
-%pom_xpath_inject "pom:dependency[pom:artifactId='javax.mail']" '<scope>provided</scope>'
-%pom_xpath_inject "pom:dependency[pom:groupId='org.apache.geronimo.specs']" '<scope>provided</scope>'
-%pom_xpath_inject "pom:dependency[pom:artifactId='disruptor']" '<scope>provided</scope>' %{name}-core
-%pom_xpath_inject "pom:dependency[pom:groupId='com.fasterxml.jackson.core']" '<scope>provided</scope>' %{name}-core
-%pom_xpath_inject "pom:dependency[pom:artifactId='jansi']" '<scope>provided</scope>' %{name}-core
-%pom_xpath_set    "pom:dependency[pom:artifactId='lightcouch']/pom:scope" provided %{name}-core
-%pom_xpath_set    "pom:dependency[pom:artifactId='mongo-java-driver']/pom:scope" provided %{name}-core
+%pom_xpath_inject "pom:dependency[pom:optional='true' and not(pom:scope)]" '<scope>provided</scope>' %{name}-core
 
 # Required at compile-time not just test, but we don't want requires
 %pom_xpath_set "pom:dependency[pom:groupId='org.eclipse.persistence']/pom:scope" provided %{name}-core
@@ -138,13 +155,14 @@ rm -rf docs/api
 # whole dir on the classpath which results in loading incorrect provider
 %mvn_file ':{%{name}-1.2-api}' %{name}/@1 %{name}
 
-%mvn_package ':%{name}-osgi' osgi
-%mvn_package 'org.apache.logging.%{name}.osgi:' osgi
 %mvn_package ':%{name}-slf4j-impl' slf4j
 %mvn_package ':%{name}-to-slf4j' slf4j
 %mvn_package ':%{name}-taglib' taglib
 %mvn_package ':%{name}-jcl' jcl
 %mvn_package ':%{name}-jmx-gui' jmx-gui
+%mvn_package ':%{name}-web' web
+%mvn_package ':%{name}-bom' bom
+%mvn_package ':%{name}-nosql' nosql
 
 %build
 # missing test deps (mockejb)
@@ -178,10 +196,12 @@ fi
 %dir %{_javadir}/%{name}
 %doc LICENSE.txt NOTICE.txt
 
-%files osgi -f .mfiles-osgi
 %files slf4j -f .mfiles-slf4j
 %files taglib -f .mfiles-taglib
 %files jcl -f .mfiles-jcl
+%files web -f .mfiles-web
+%files bom -f .mfiles-bom
+%files nosql -f .mfiles-nosql
 %files jmx-gui -f .mfiles-jmx-gui
 %{_bindir}/%{name}-jmx
 
@@ -190,6 +210,11 @@ fi
 
 
 %changelog
+* Fri Jul 18 2014 Michael Simacek <msimacek@redhat.com> 2.0-1
+- Update to upstream version 2.0
+- Remove osgi subpackage (osgi parts were moved to corresponding artifacts)
+- Add web, bom, nosql subpackages (new)
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0-0.3.rc1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
