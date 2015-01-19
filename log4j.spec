@@ -1,6 +1,6 @@
 Name:           log4j
 Version:        2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -111,7 +111,7 @@ Obsoletes:      %{name}-manual < %{version}
 %prep
 %setup -q -n apache-%{name}-%{version}-src
 
-%pom_remove_plugin :maven-site-plugin
+%pom_remove_plugin -r :maven-site-plugin
 
 # remove all the stuff we'll build ourselves
 find -name "*.jar" -o -name "*.class" -delete
@@ -210,6 +210,9 @@ fi
 
 
 %changelog
+* Mon Jan 19 2015 Michael Simacek <msimacek@redhat.com> - 2.0-2
+- Remove site-plugin from all poms
+
 * Fri Jul 18 2014 Michael Simacek <msimacek@redhat.com> 2.0-1
 - Update to upstream version 2.0
 - Remove osgi subpackage (osgi parts were moved to corresponding artifacts)
