@@ -1,6 +1,6 @@
 Name:           log4j
-Version:        2.0
-Release:        2%{?dist}
+Version:        2.2
+Release:        1%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -131,7 +131,8 @@ rm -rf docs/api
 %pom_add_dep sun.jdk:jconsole %{name}-jmx-gui
 
 # Different AID, provided by equinox
-%pom_remove_dep :org.osgi.core pom.xml %{name}-core %{name}-api
+%pom_remove_dep : %{name}-api
+%pom_add_dep org.eclipse:osgi:any:provided %{name}-api
 
 # Classpath hell, equinox must come before felix
 %pom_remove_dep org.eclipse.osgi:org.eclipse.osgi %{name}-core
@@ -140,9 +141,6 @@ rm -rf docs/api
 # Old version of specification
 %pom_remove_dep :javax.persistence %{name}-core
 %pom_add_dep org.hibernate.javax.persistence:hibernate-jpa-2.1-api:any:provided %{name}-core
-
-# Do not generate requires on optional dependencies
-%pom_xpath_inject "pom:dependency[pom:optional='true' and not(pom:scope)]" '<scope>provided</scope>' %{name}-core
 
 # Required at compile-time not just test, but we don't want requires
 %pom_xpath_set "pom:dependency[pom:groupId='org.eclipse.persistence']/pom:scope" provided %{name}-core
@@ -210,6 +208,9 @@ fi
 
 
 %changelog
+* Thu Feb 26 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.2-1
+- Update to upstream version 2.2
+
 * Mon Jan 19 2015 Michael Simacek <msimacek@redhat.com> - 2.0-2
 - Remove site-plugin from all poms
 
