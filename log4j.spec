@@ -1,5 +1,5 @@
 Name:           log4j
-Version:        2.2
+Version:        2.3
 Release:        1%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
@@ -10,40 +10,31 @@ Source0:        http://www.apache.org/dist/logging/%{name}/%{version}/apache-%{n
 BuildRequires:  maven-local
 BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-core)
 BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-databind)
-BuildRequires:  mvn(com.h2database:h2)
-BuildRequires:  mvn(com.lmax:disruptor)
-BuildRequires:  mvn(commons-httpclient:commons-httpclient)
+BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml)
+BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-yaml)
+BuildRequires:  mvn(com.lmax:disruptor) >= 3.3.2
 BuildRequires:  mvn(commons-logging:commons-logging)
 BuildRequires:  mvn(com.sun.mail:javax.mail)
-BuildRequires:  mvn(javax.jmdns:jmdns)
 BuildRequires:  mvn(javax.servlet:javax.servlet-api)
 BuildRequires:  mvn(javax.servlet.jsp:jsp-api)
 BuildRequires:  mvn(javax.servlet:servlet-api)
-BuildRequires:  mvn(junit:junit)
 BuildRequires:  mvn(org.apache:apache:pom:)
-BuildRequires:  mvn(org.apache.commons:commons-lang3)
 BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
-BuildRequires:  mvn(org.apache.felix:org.apache.felix.framework)
-BuildRequires:  mvn(org.apache.geronimo.specs:geronimo-jms_1.1_spec)
-BuildRequires:  mvn(org.apache.maven.plugins:maven-antrun-plugin)
-BuildRequires:  mvn(org.apache.velocity:velocity)
-BuildRequires:  mvn(org.codehaus.mojo:exec-maven-plugin)
-BuildRequires:  mvn(org.easymock:easymock)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-failsafe-plugin)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-remote-resources-plugin)
+BuildRequires:  mvn(org.codehaus.woodstox:woodstox-core-asl)
+BuildRequires:  mvn(org.eclipse:osgi)
 BuildRequires:  mvn(org.eclipse.osgi:org.eclipse.osgi)
 BuildRequires:  mvn(org.eclipse.persistence:org.eclipse.persistence.jpa)
 BuildRequires:  mvn(org.fusesource.jansi:jansi)
 BuildRequires:  mvn(org.hibernate.javax.persistence:hibernate-jpa-2.1-api)
-BuildRequires:  mvn(org.hsqldb:hsqldb)
+BuildRequires:  mvn(org.jboss.spec.javax.jms:jboss-jms-api_1.1_spec)
 BuildRequires:  mvn(org.lightcouch:lightcouch)
 BuildRequires:  mvn(org.mongodb:mongo-java-driver)
+BuildRequires:  mvn(org.osgi:org.osgi.core)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.slf4j:slf4j-ext)
-BuildRequires:  mvn(org.springframework:spring-core)
-BuildRequires:  mvn(org.springframework:spring-test)
-BuildRequires:  mvn(org.apache.maven.plugins:maven-failsafe-plugin)
-BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml)
-BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-yaml)
-BuildRequires:  mvn(org.jboss.spec.javax.jms:jboss-jms-api_1.1_spec)
+BuildRequires:  mvn(sun.jdk:jconsole)
 
 Obsoletes:      %{name}-osgi < %{version}-%{release}
 
@@ -208,6 +199,9 @@ fi
 
 
 %changelog
+* Tue Jun  2 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.3-1
+- Update to upstream version 2.3
+
 * Thu Feb 26 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.2-1
 - Update to upstream version 2.2
 
