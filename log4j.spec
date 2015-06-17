@@ -1,6 +1,6 @@
 Name:           log4j
 Version:        2.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -199,6 +199,9 @@ fi
 
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Tue Jun  2 2015 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.3-1
 - Update to upstream version 2.3
 
