@@ -1,6 +1,6 @@
 Name:           log4j
-Version:        2.3
-Release:        3%{?dist}
+Version:        2.5
+Release:        1%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -12,13 +12,15 @@ BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-core)
 BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-databind)
 BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml)
 BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-yaml)
-BuildRequires:  mvn(com.lmax:disruptor) >= 3.3.2
+BuildRequires:  mvn(com.lmax:disruptor)
 BuildRequires:  mvn(commons-logging:commons-logging)
 BuildRequires:  mvn(com.sun.mail:javax.mail)
 BuildRequires:  mvn(javax.servlet:javax.servlet-api)
 BuildRequires:  mvn(javax.servlet.jsp:jsp-api)
 BuildRequires:  mvn(javax.servlet:servlet-api)
 BuildRequires:  mvn(org.apache:apache:pom:)
+BuildRequires:  mvn(org.apache.commons:commons-compress)
+BuildRequires:  mvn(org.apache.commons:commons-csv)
 BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
 BuildRequires:  mvn(org.apache.maven.plugins:maven-failsafe-plugin)
 BuildRequires:  mvn(org.apache.maven.plugins:maven-remote-resources-plugin)
@@ -30,10 +32,12 @@ BuildRequires:  mvn(org.fusesource.jansi:jansi)
 BuildRequires:  mvn(org.hibernate.javax.persistence:hibernate-jpa-2.1-api)
 BuildRequires:  mvn(org.jboss.spec.javax.jms:jboss-jms-api_1.1_spec)
 BuildRequires:  mvn(org.lightcouch:lightcouch)
+BuildRequires:  mvn(org.liquibase:liquibase-core)
 BuildRequires:  mvn(org.mongodb:mongo-java-driver)
 BuildRequires:  mvn(org.osgi:org.osgi.core)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.slf4j:slf4j-ext)
+BuildRequires:  mvn(org.zeromq:jeromq)
 BuildRequires:  mvn(sun.jdk:jconsole)
 
 Obsoletes:      %{name}-osgi < %{version}-%{release}
@@ -117,6 +121,10 @@ rm -rf docs/api
 # jmh not available
 %pom_disable_module %{name}-perf
 
+# kafka not available
+rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
+%pom_remove_dep -r :kafka-clients
+
 # System scoped dep provided by JDK
 %pom_remove_dep :jconsole %{name}-jmx-gui
 %pom_add_dep sun.jdk:jconsole %{name}-jmx-gui
@@ -199,6 +207,9 @@ fi
 
 
 %changelog
+* Mon Feb 15 2016 Michael Simacek <msimacek@redhat.com> - 2.5-1
+- Update to upstream version 2.5
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
