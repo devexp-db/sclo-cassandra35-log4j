@@ -1,6 +1,6 @@
 Name:           log4j
 Version:        2.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -96,6 +96,12 @@ Summary:        Apache Log4j NoSql
 %description nosql
 Use NoSQL databases such as MongoDB and CouchDB to append log messages.
 
+%package liquibase
+Summary:        Apache Log4j Liquibase Binding
+
+%description liquibase
+The Apache Log4j Liquibase binding to Log4j 2 Core.
+
 %package        javadoc
 Summary:        API documentation for %{name}
 Obsoletes:      %{name}-manual < %{version}
@@ -160,6 +166,7 @@ rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 %mvn_package ':%{name}-web' web
 %mvn_package ':%{name}-bom' bom
 %mvn_package ':%{name}-nosql' nosql
+%mvn_package ':%{name}-liquibase' liquibase
 
 %build
 # missing test deps (mockejb)
@@ -199,6 +206,7 @@ fi
 %files web -f .mfiles-web
 %files bom -f .mfiles-bom
 %files nosql -f .mfiles-nosql
+%files liquibase -f .mfiles-liquibase
 %files jmx-gui -f .mfiles-jmx-gui
 %{_bindir}/%{name}-jmx
 
@@ -207,6 +215,9 @@ fi
 
 
 %changelog
+* Mon Feb 15 2016 Michael Simacek <msimacek@redhat.com> - 2.5-2
+- Split log4j-liquibase into separate subpackage
+
 * Mon Feb 15 2016 Michael Simacek <msimacek@redhat.com> - 2.5-1
 - Update to upstream version 2.5
 
