@@ -1,6 +1,6 @@
 Name:           log4j
 Version:        2.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -23,7 +23,6 @@ BuildRequires:  mvn(org.apache.commons:commons-compress)
 BuildRequires:  mvn(org.apache.commons:commons-csv)
 BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
 BuildRequires:  mvn(org.apache.maven.plugins:maven-failsafe-plugin)
-BuildRequires:  mvn(org.apache.maven.plugins:maven-remote-resources-plugin)
 BuildRequires:  mvn(org.codehaus.woodstox:woodstox-core-asl)
 BuildRequires:  mvn(org.eclipse:osgi)
 BuildRequires:  mvn(org.eclipse.osgi:org.eclipse.osgi)
@@ -113,6 +112,7 @@ Obsoletes:      %{name}-manual < %{version}
 %setup -q -n apache-%{name}-%{version}-src
 
 %pom_remove_plugin -r :maven-site-plugin
+%pom_remove_plugin -r :maven-remote-resources-plugin
 
 # remove all the stuff we'll build ourselves
 find -name "*.jar" -o -name "*.class" -delete
@@ -215,6 +215,9 @@ fi
 
 
 %changelog
+* Mon May 23 2016 Michael Simacek <msimacek@redhat.com> - 2.5-3
+- Remove maven-remote-resources-plugin to fix FTBFS
+
 * Mon Feb 15 2016 Michael Simacek <msimacek@redhat.com> - 2.5-2
 - Split log4j-liquibase into separate subpackage
 
