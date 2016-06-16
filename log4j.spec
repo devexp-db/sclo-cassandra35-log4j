@@ -1,6 +1,6 @@
 Name:           log4j
 Version:        2.5
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -147,6 +147,9 @@ rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 %pom_remove_dep :javax.persistence %{name}-core
 %pom_add_dep org.hibernate.javax.persistence:hibernate-jpa-2.1-api:any:provided %{name}-core
 
+# BOM package shouldn't require Apache RAT
+%pom_remove_plugin :apache-rat-plugin %{name}-bom
+
 # Required at compile-time not just test, but we don't want requires
 %pom_xpath_set "pom:dependency[pom:groupId='org.eclipse.persistence']/pom:scope" provided %{name}-core
 %pom_xpath_set "pom:dependency[pom:groupId='org.eclipse.osgi']/pom:scope" provided %{name}-core
@@ -215,6 +218,9 @@ fi
 
 
 %changelog
+* Thu Jun 16 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.5-4
+- Remove RAT depenency from BOM package
+
 * Mon May 23 2016 Michael Simacek <msimacek@redhat.com> - 2.5-3
 - Remove maven-remote-resources-plugin to fix FTBFS
 
