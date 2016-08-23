@@ -1,6 +1,6 @@
 Name:           log4j
-Version:        2.5
-Release:        4%{?dist}
+Version:        2.6.1
+Release:        1%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -12,6 +12,7 @@ BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-core)
 BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-databind)
 BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml)
 BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-yaml)
+BuildRequires:  mvn(com.fasterxml.woodstox:woodstox-core)
 BuildRequires:  mvn(com.lmax:disruptor)
 BuildRequires:  mvn(commons-logging:commons-logging)
 BuildRequires:  mvn(com.sun.mail:javax.mail)
@@ -23,7 +24,6 @@ BuildRequires:  mvn(org.apache.commons:commons-compress)
 BuildRequires:  mvn(org.apache.commons:commons-csv)
 BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
 BuildRequires:  mvn(org.apache.maven.plugins:maven-failsafe-plugin)
-BuildRequires:  mvn(org.codehaus.woodstox:woodstox-core-asl)
 BuildRequires:  mvn(org.eclipse:osgi)
 BuildRequires:  mvn(org.eclipse.osgi:org.eclipse.osgi)
 BuildRequires:  mvn(org.eclipse.persistence:org.eclipse.persistence.jpa)
@@ -218,6 +218,9 @@ fi
 
 
 %changelog
+* Thu Jun 23 2016 Michael Simacek <msimacek@redhat.com> - 2.6.1-1
+- Update to upstream version 2.6.1
+
 * Thu Jun 16 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.5-4
 - Remove RAT depenency from BOM package
 
