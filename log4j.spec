@@ -1,5 +1,5 @@
 Name:           log4j
-Version:        2.6.1
+Version:        2.7
 Release:        1%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
@@ -8,6 +8,7 @@ URL:            http://logging.apache.org/%{name}
 Source0:        http://www.apache.org/dist/logging/%{name}/%{version}/apache-%{name}-%{version}-src.tar.gz
 
 BuildRequires:  maven-local
+BuildRequires:  mvn(com.beust:jcommander)
 BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-core)
 BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-databind)
 BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml)
@@ -30,6 +31,7 @@ BuildRequires:  mvn(org.eclipse.persistence:org.eclipse.persistence.jpa)
 BuildRequires:  mvn(org.fusesource.jansi:jansi)
 BuildRequires:  mvn(org.hibernate.javax.persistence:hibernate-jpa-2.1-api)
 BuildRequires:  mvn(org.jboss.spec.javax.jms:jboss-jms-api_1.1_spec)
+BuildRequires:  mvn(org.jctools:jctools-core)
 BuildRequires:  mvn(org.lightcouch:lightcouch)
 BuildRequires:  mvn(org.liquibase:liquibase-core)
 BuildRequires:  mvn(org.mongodb:mongo-java-driver)
@@ -127,6 +129,14 @@ rm -rf docs/api
 # jmh not available
 %pom_disable_module %{name}-perf
 
+# unavailable com.conversantmedia:disruptor
+rm log4j-core/src/main/java/org/apache/logging/log4j/core/async/DisruptorBlockingQueueFactory.java
+%pom_remove_dep com.conversantmedia:disruptor %{name}-core
+
+# unavailable net.alchim31.maven:scala-maven-plugin
+%pom_disable_module log4j-api-scala_2.10
+%pom_disable_module log4j-api-scala_2.11
+
 # kafka not available
 rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 %pom_remove_dep -r :kafka-clients
@@ -180,25 +190,6 @@ rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 
 %jpackage_script org.apache.logging.log4j.jmx.gui.ClientGUI '' '' %{name}/%{name}-jmx-gui:%{name}/%{name}-core %{name}-jmx false
 
-# TODO: Remove this in F-24
-%preun
-if [ $1 -eq 0 ]; then
-  if [ -x xmlcatalog -a -w %{_sysconfdir}/xml/catalog ]; then
-    xmlcatalog --noout --del \
-      file://%{_datadir}/sgml/%{name}/log4j.dtd \
-      %{_sysconfdir}/xml/catalog > /dev/null || :
-  fi
-fi
-
-# TODO: Remove this in F-24
-%postun
-# Note that we're using versioned catalog, so this is always ok.
-if [ -x install-catalog -a -d %{_sysconfdir}/sgml ]; then
-  install-catalog --remove \
-    %{_sysconfdir}/sgml/%{name}-%{version}-%{release}.cat \
-    %{_datadir}/sgml/%{name}/catalog > /dev/null || :
-fi
-
 %files -f .mfiles
 %dir %{_javadir}/%{name}
 %doc LICENSE.txt NOTICE.txt
@@ -218,6 +209,10 @@ fi
 
 
 %changelog
+* Wed Nov 09 2016 Michael Simacek <msimacek@redhat.com> - 2.7-1
+- Update to upstream version 2.7
+- Remove stuff marked as "Remove in F24"
+
 * Thu Jun 23 2016 Michael Simacek <msimacek@redhat.com> - 2.6.1-1
 - Update to upstream version 2.6.1
 
