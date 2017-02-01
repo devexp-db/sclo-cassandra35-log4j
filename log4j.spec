@@ -1,6 +1,8 @@
+%bcond_without  nosql
+
 Name:           log4j
 Version:        2.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -25,17 +27,16 @@ BuildRequires:  mvn(org.apache.commons:commons-compress)
 BuildRequires:  mvn(org.apache.commons:commons-csv)
 BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
 BuildRequires:  mvn(org.apache.maven.plugins:maven-failsafe-plugin)
-BuildRequires:  mvn(org.eclipse:osgi)
-BuildRequires:  mvn(org.eclipse.osgi:org.eclipse.osgi)
-BuildRequires:  mvn(org.eclipse.persistence:org.eclipse.persistence.jpa)
 BuildRequires:  mvn(org.fusesource.jansi:jansi)
 BuildRequires:  mvn(org.hibernate.javax.persistence:hibernate-jpa-2.1-api)
 BuildRequires:  mvn(org.jboss.spec.javax.jms:jboss-jms-api_1.1_spec)
 BuildRequires:  mvn(org.jctools:jctools-core)
+%if %{with nosql}
 BuildRequires:  mvn(org.lightcouch:lightcouch)
 BuildRequires:  mvn(org.liquibase:liquibase-core)
 BuildRequires:  mvn(org.mongodb:mongo-java-driver)
-BuildRequires:  mvn(org.osgi:org.osgi.core)
+%endif
+BuildRequires:  mvn(org.osgi:osgi.core)
 BuildRequires:  mvn(org.slf4j:slf4j-api)
 BuildRequires:  mvn(org.slf4j:slf4j-ext)
 BuildRequires:  mvn(org.zeromq:jeromq)
@@ -91,6 +92,8 @@ Summary:        Apache Log4j BOM
 %description bom
 Apache Log4j 2 Bill of Material
 
+
+%if %{with nosql}
 %package nosql
 Summary:        Apache Log4j NoSql
 
@@ -102,6 +105,8 @@ Summary:        Apache Log4j Liquibase Binding
 
 %description liquibase
 The Apache Log4j Liquibase binding to Log4j 2 Core.
+
+%endif
 
 %package        javadoc
 Summary:        API documentation for %{name}
@@ -126,7 +131,7 @@ rm -rf docs/api
 # Apache Flume is not in Fedora yet
 %pom_disable_module %{name}-flume-ng
 
-# jmh not available
+# artifact for upstream testing of log4j itself, shouldn't be distributed
 %pom_disable_module %{name}-perf
 
 # unavailable com.conversantmedia:disruptor
@@ -145,13 +150,8 @@ rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 %pom_remove_dep :jconsole %{name}-jmx-gui
 %pom_add_dep sun.jdk:jconsole %{name}-jmx-gui
 
-# Different AID, provided by equinox
-%pom_remove_dep : %{name}-api
-%pom_add_dep org.eclipse:osgi:any:provided %{name}-api
-
-# Classpath hell, equinox must come before felix
-%pom_remove_dep org.eclipse.osgi:org.eclipse.osgi %{name}-core
-%pom_add_dep org.eclipse.osgi:org.eclipse.osgi:any:provided %{name}-core
+# old AID is provided by felix, we want osgi-core
+%pom_change_dep -r org.osgi:org.osgi.core org.osgi:osgi.core
 
 # Old version of specification
 %pom_remove_dep :javax.persistence %{name}-core
@@ -160,9 +160,10 @@ rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 # BOM package shouldn't require Apache RAT
 %pom_remove_plugin :apache-rat-plugin %{name}-bom
 
-# Required at compile-time not just test, but we don't want requires
-%pom_xpath_set "pom:dependency[pom:groupId='org.eclipse.persistence']/pom:scope" provided %{name}-core
-%pom_xpath_set "pom:dependency[pom:groupId='org.eclipse.osgi']/pom:scope" provided %{name}-core
+%if %{without nosql}
+%pom_disable_module %{name}-nosql
+%pom_disable_module %{name}-liquibase
+%endif
 
 %mvn_alias :%{name}-1.2-api %{name}:%{name}
 
@@ -199,8 +200,10 @@ rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 %files jcl -f .mfiles-jcl
 %files web -f .mfiles-web
 %files bom -f .mfiles-bom
+%if %{with nosql}
 %files nosql -f .mfiles-nosql
 %files liquibase -f .mfiles-liquibase
+%endif
 %files jmx-gui -f .mfiles-jmx-gui
 %{_bindir}/%{name}-jmx
 
@@ -209,6 +212,10 @@ rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 
 
 %changelog
+* Wed Feb 01 2017 Michael Simacek <msimacek@redhat.com> - 2.7-2
+- Cleanup osgi parts
+- Add conditional for nosql
+
 * Wed Nov 09 2016 Michael Simacek <msimacek@redhat.com> - 2.7-1
 - Update to upstream version 2.7
 - Remove stuff marked as "Remove in F24"
