@@ -2,7 +2,7 @@
 
 Name:           log4j
 Version:        2.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Java logging package
 BuildArch:      noarch
 License:        ASL 2.0
@@ -212,6 +212,9 @@ rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 
 
 %changelog
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.7-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Wed Feb 01 2017 Michael Simacek <msimacek@redhat.com> - 2.7-2
 - Cleanup osgi parts
 - Add conditional for nosql
