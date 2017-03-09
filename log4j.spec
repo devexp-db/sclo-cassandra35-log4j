@@ -1,123 +1,132 @@
+%{?scl:%scl_package log4j}
+%{!?scl:%global pkg_name %{name}}
+
 %bcond_without  nosql
 
-Name:           log4j
-Version:        2.7
-Release:        3%{?dist}
-Summary:        Java logging package
-BuildArch:      noarch
-License:        ASL 2.0
-URL:            http://logging.apache.org/%{name}
-Source0:        http://www.apache.org/dist/logging/%{name}/%{version}/apache-%{name}-%{version}-src.tar.gz
+Name:		%{?scl_prefix}log4j
+Version:	2.7
+Release:	4%{?dist}
+Summary:	Java logging package
+BuildArch:	noarch
+License:	ASL 2.0
+URL:		http://logging.apache.org/log4j
+Source0:        http://www.apache.org/dist/logging/%{pkg_name}/%{version}/apache-%{pkg_name}-%{version}-src.tar.gz
 
-BuildRequires:  maven-local
-BuildRequires:  mvn(com.beust:jcommander)
-BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-core)
-BuildRequires:  mvn(com.fasterxml.jackson.core:jackson-databind)
-BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml)
-BuildRequires:  mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-yaml)
-BuildRequires:  mvn(com.fasterxml.woodstox:woodstox-core)
-BuildRequires:  mvn(com.lmax:disruptor)
-BuildRequires:  mvn(commons-logging:commons-logging)
-BuildRequires:  mvn(com.sun.mail:javax.mail)
-BuildRequires:  mvn(javax.servlet:javax.servlet-api)
-BuildRequires:  mvn(javax.servlet.jsp:jsp-api)
-BuildRequires:  mvn(javax.servlet:servlet-api)
-BuildRequires:  mvn(org.apache:apache:pom:)
-BuildRequires:  mvn(org.apache.commons:commons-compress)
-BuildRequires:  mvn(org.apache.commons:commons-csv)
-BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
-BuildRequires:  mvn(org.apache.maven.plugins:maven-failsafe-plugin)
-BuildRequires:  mvn(org.fusesource.jansi:jansi)
-BuildRequires:  mvn(org.hibernate.javax.persistence:hibernate-jpa-2.1-api)
-BuildRequires:  mvn(org.jboss.spec.javax.jms:jboss-jms-api_1.1_spec)
-BuildRequires:  mvn(org.jctools:jctools-core)
-%if %{with nosql}
-BuildRequires:  mvn(org.lightcouch:lightcouch)
-BuildRequires:  mvn(org.liquibase:liquibase-core)
-BuildRequires:  mvn(org.mongodb:mongo-java-driver)
-%endif
-BuildRequires:  mvn(org.osgi:osgi.core)
-BuildRequires:  mvn(org.slf4j:slf4j-api)
-BuildRequires:  mvn(org.slf4j:slf4j-ext)
-BuildRequires:  mvn(org.zeromq:jeromq)
-BuildRequires:  mvn(sun.jdk:jconsole)
+# remove osgi-core in scl package
+Patch0:		%{pkg_name}-%{version}-remove-osgi-core-dep.patch
 
-Obsoletes:      %{name}-osgi < %{version}-%{release}
+BuildRequires:	%{?scl_prefix_maven}maven-local
+BuildRequires:	%{?scl_prefix_maven}beust-jcommander
+BuildRequires:	%{?scl_prefix}jackson-core
+BuildRequires:	%{?scl_prefix}jackson-databind
+BuildRequires:	%{?scl_prefix}jackson-dataformat-xml
+BuildRequires:	%{?scl_prefix}jackson-dataformat-yaml
+BuildRequires:	%{?scl_prefix_maven}woodstox-core
+BuildRequires:	%{?scl_prefix}disruptor
+BuildRequires:	%{?scl_prefix_java_common}apache-commons-logging
+BuildRequires:	%{?scl_prefix_java_common}javamail
+%{!?scl:BuildRequires:	mvn(javax.servlet.jsp:jsp-api)}
+%{?scl:BuildRequires:	%{?scl_prefix_java_common}glassfish-jsp-api}
+BuildRequires:	%{?scl_prefix_maven}apache-parent
+BuildRequires:	%{?scl_prefix_java_common}apache-commons-compress
+BuildRequires:	%{?scl_prefix}apache-commons-csv
+BuildRequires:	%{?scl_prefix_maven}maven-plugin-bundle
+BuildRequires:	%{?scl_prefix_maven}maven-failsafe-plugin
+BuildRequires:	%{?scl_prefix_java_common}jansi
+BuildRequires:	%{?scl_prefix}hibernate-jpa-2.1-api
+BuildRequires:	%{?scl_prefix}jboss-jms-1.1-api
+BuildRequires:	%{?scl_prefix}jctools
+%{!?scl:%if %{with nosql}
+BuildRequires:	mvn(org.lightcouch:lightcouch)
+BuildRequires:	mvn(org.liquibase:liquibase-core)
+BuildRequires:	mvn(org.mongodb:mongo-java-driver)
+%endif}
+%{!?scl:BuildRequires:	mvn(org.osgi:osgi.core)}
+BuildRequires:	%{?scl_prefix}slf4j
+BuildRequires:	%{?scl_prefix}slf4j-ext
+BuildRequires:	%{?scl_prefix}jeromq
+BuildRequires:	%{?scl_prefix_java_common}javapackages-tools
+BuildRequires:	%{?scl_prefix}jackson-annotations
+BuildRequires:	%{?scl_prefix}jackson-module-jaxb-annotations
+BuildRequires:  %{?scl_prefix_maven}cal10n
+BuildRequires:  %{?scl_prefix_java_common}javassist
+%{?scl:Requires: %scl_runtime}
+
+Obsoletes:	%{pkg_name}-osgi < %{version}-%{release}
 
 %description
 Log4j is a tool to help the programmer output log statements to a
 variety of output targets.
 
-%package osgi
-Summary:        Apache Log4J Core OSGi Bundles
+%{!?scl:%package osgi
+Summary:	Apache Log4J Core OSGi Bundles
 
 %description osgi
-Apache Log4J Core OSGi Bundles.
+Apache Log4J Core OSGi Bundles.}
 
 %package slf4j
-Summary:        Binding between LOG4J 2 API and SLF4J
+Summary:	Binding between LOG4J 2 API and SLF4J
 
 %description slf4j
 Binding between LOG4J 2 API and SLF4J.
 
 %package taglib
-Summary:        Apache Log4j Tag Library
+Summary:	Apache Log4j Tag Library
 
 %description taglib
 Apache Log4j Tag Library for Web Applications.
 
 %package jcl
-Summary:        Apache Log4j Commons Logging Bridge
+Summary:	Apache Log4j Commons Logging Bridge
 
 %description jcl
 Apache Log4j Commons Logging Bridge.
 
 %package jmx-gui
-Summary:        Apache Log4j JMX GUI
-Requires:       java-devel
+Summary:	Apache Log4j JMX GUI
+Requires:	java-devel
 
 %description jmx-gui
 Swing-based client for remotely editing the log4j configuration and remotely
 monitoring StatusLogger output. Includes a JConsole plug-in.
 
 %package web
-Summary:        Apache Log4j Web
+Summary:	Apache Log4j Web
 
 %description web
 Support for Log4j in a web servlet container.
 
 %package bom
-Summary:        Apache Log4j BOM
+Summary:	Apache Log4j BOM
 
 %description bom
 Apache Log4j 2 Bill of Material
 
-
-%if %{with nosql}
+%{!?scl:%if %{with nosql}
 %package nosql
-Summary:        Apache Log4j NoSql
+Summary:	Apache Log4j NoSql
 
 %description nosql
 Use NoSQL databases such as MongoDB and CouchDB to append log messages.
 
 %package liquibase
-Summary:        Apache Log4j Liquibase Binding
+Summary:	Apache Log4j Liquibase Binding
 
 %description liquibase
 The Apache Log4j Liquibase binding to Log4j 2 Core.
+%endif}
 
-%endif
+%package javadoc
+Summary:	API documentation for %{name}
+Obsoletes:	%{pkg_name}-manual < %{version}
 
-%package        javadoc
-Summary:        API documentation for %{name}
-Obsoletes:      %{name}-manual < %{version}
-
-%description    javadoc
+%description javadoc
 %{summary}.
 
 %prep
-%setup -q -n apache-%{name}-%{version}-src
+%setup -q -n apache-%{pkg_name}-%{version}-src
 
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 %pom_remove_plugin -r :maven-site-plugin
 %pom_remove_plugin -r :maven-remote-resources-plugin
 
@@ -125,18 +134,18 @@ Obsoletes:      %{name}-manual < %{version}
 find -name "*.jar" -o -name "*.class" -delete
 rm -rf docs/api
 
-%pom_disable_module %{name}-samples
-%pom_disable_module %{name}-distribution
+%pom_disable_module %{pkg_name}-samples
+%pom_disable_module %{pkg_name}-distribution
 
 # Apache Flume is not in Fedora yet
-%pom_disable_module %{name}-flume-ng
+%pom_disable_module %{pkg_name}-flume-ng
 
 # artifact for upstream testing of log4j itself, shouldn't be distributed
-%pom_disable_module %{name}-perf
+%pom_disable_module %{pkg_name}-perf
 
 # unavailable com.conversantmedia:disruptor
 rm log4j-core/src/main/java/org/apache/logging/log4j/core/async/DisruptorBlockingQueueFactory.java
-%pom_remove_dep com.conversantmedia:disruptor %{name}-core
+%pom_remove_dep com.conversantmedia:disruptor %{pkg_name}-core
 
 # unavailable net.alchim31.maven:scala-maven-plugin
 %pom_disable_module log4j-api-scala_2.10
@@ -147,52 +156,73 @@ rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 %pom_remove_dep -r :kafka-clients
 
 # System scoped dep provided by JDK
-%pom_remove_dep :jconsole %{name}-jmx-gui
-%pom_add_dep sun.jdk:jconsole %{name}-jmx-gui
+%pom_remove_dep :jconsole %{pkg_name}-jmx-gui
+%pom_add_dep sun.jdk:jconsole %{pkg_name}-jmx-gui
 
 # old AID is provided by felix, we want osgi-core
 %pom_change_dep -r org.osgi:org.osgi.core org.osgi:osgi.core
 
 # Old version of specification
-%pom_remove_dep :javax.persistence %{name}-core
-%pom_add_dep org.hibernate.javax.persistence:hibernate-jpa-2.1-api:any:provided %{name}-core
+%pom_remove_dep :javax.persistence %{pkg_name}-core
+%pom_add_dep org.hibernate.javax.persistence:hibernate-jpa-2.1-api:any:provided %{pkg_name}-core
 
 # BOM package shouldn't require Apache RAT
-%pom_remove_plugin :apache-rat-plugin %{name}-bom
+%pom_remove_plugin :apache-rat-plugin %{pkg_name}-bom
+
+# remove osgi-core dependency in scl package
+%{?scl:%pom_remove_dep -r :osgi.core
+rm log4j-api/src/main/java/org/apache/logging/log4j/util/Activator.java
+rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/osgi/
+%patch0 -p1
+}
+
+# change woodstox-core and jsp dependencies in scl package
+%{?scl:%pom_change_dep :woodstox-core: org.codehaus.woodstox:woodstox-core-asl:4.1.2 %{pkg_name}-core
+%pom_change_dep javax.servlet.jsp: javax.servlet.jsp:javax.servlet.jsp-api %{pkg_name}-taglib}
 
 %if %{without nosql}
-%pom_disable_module %{name}-nosql
-%pom_disable_module %{name}-liquibase
+%pom_disable_module %{pkg_name}-nosql
+%pom_disable_module %{pkg_name}-liquibase
 %endif
 
-%mvn_alias :%{name}-1.2-api %{name}:%{name}
+%{?scl:%pom_disable_module %{pkg_name}-nosql
+%pom_disable_module %{pkg_name}-liquibase}
+
+%mvn_alias :%{pkg_name}-1.2-api %{pkg_name}:%{pkg_name}
 
 # Note that packages using the compatibility layer still need to have log4j-core
 # on the classpath to run. This is there to prevent build-classpath from putting
 # whole dir on the classpath which results in loading incorrect provider
-%mvn_file ':{%{name}-1.2-api}' %{name}/@1 %{name}
+%mvn_file ':{%{pkg_name}-1.2-api}' %{pkg_name}/@1 %{pkg_name}
 
-%mvn_package ':%{name}-slf4j-impl' slf4j
-%mvn_package ':%{name}-to-slf4j' slf4j
-%mvn_package ':%{name}-taglib' taglib
-%mvn_package ':%{name}-jcl' jcl
-%mvn_package ':%{name}-jmx-gui' jmx-gui
-%mvn_package ':%{name}-web' web
-%mvn_package ':%{name}-bom' bom
-%mvn_package ':%{name}-nosql' nosql
-%mvn_package ':%{name}-liquibase' liquibase
+%mvn_package ':%{pkg_name}-slf4j-impl' slf4j
+%mvn_package ':%{pkg_name}-to-slf4j' slf4j
+%mvn_package ':%{pkg_name}-taglib' taglib
+%mvn_package ':%{pkg_name}-jcl' jcl
+%mvn_package ':%{pkg_name}-jmx-gui' jmx-gui
+%mvn_package ':%{pkg_name}-web' web
+%mvn_package ':%{pkg_name}-bom' bom
+%{!?scl:%if %{with nosql}
+%mvn_package ':%{pkg_name}-nosql' nosql
+%mvn_package ':%{pkg_name}-liquibase' liquibase
+%endif}
+%{?scl:EOF}
 
 %build
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 # missing test deps (mockejb)
 %mvn_build -f
+%{?scl:EOF}
 
 %install
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 %mvn_install
+%{?scl:EOF}
 
-%jpackage_script org.apache.logging.log4j.jmx.gui.ClientGUI '' '' %{name}/%{name}-jmx-gui:%{name}/%{name}-core %{name}-jmx false
+%jpackage_script org.apache.logging.log4j.jmx.gui.ClientGUI '' '' %{pkg_name}/%{pkg_name}-jmx-gui:%{pkg_name}/%{pkg_name}-core %{pkg_name}-jmx false
 
 %files -f .mfiles
-%dir %{_javadir}/%{name}
+%dir %{_javadir}/%{pkg_name}
 %doc LICENSE.txt NOTICE.txt
 
 %files slf4j -f .mfiles-slf4j
@@ -200,18 +230,20 @@ rm -r log4j-core/src/main/java/org/apache/logging/log4j/core/appender/mom/kafka
 %files jcl -f .mfiles-jcl
 %files web -f .mfiles-web
 %files bom -f .mfiles-bom
-%if %{with nosql}
+%{!?scl:%if %{with nosql}
 %files nosql -f .mfiles-nosql
 %files liquibase -f .mfiles-liquibase
-%endif
+%endif}
 %files jmx-gui -f .mfiles-jmx-gui
-%{_bindir}/%{name}-jmx
+%{_bindir}/%{pkg_name}-jmx
 
 %files javadoc -f .mfiles-javadoc
 %doc LICENSE.txt NOTICE.txt
 
-
 %changelog
+* Tue Feb 28 2017 Tomas Repik <trepik@redhat.com> - 2.7-4
+- scl conversion
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.7-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
