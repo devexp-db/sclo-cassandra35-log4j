@@ -50,6 +50,7 @@ BuildRequires:	%{?scl_prefix}jackson-annotations
 BuildRequires:	%{?scl_prefix}jackson-module-jaxb-annotations
 BuildRequires:  %{?scl_prefix_maven}cal10n
 BuildRequires:  %{?scl_prefix_java_common}javassist
+BuildRequires:  %{?scl_prefix}snakeyaml
 %{?scl:Requires: %scl_runtime}
 
 Obsoletes:	%{pkg_name}-osgi < %{version}-%{release}
